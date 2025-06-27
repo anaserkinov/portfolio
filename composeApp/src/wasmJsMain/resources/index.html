@@ -1,12 +1,155 @@
 <!DOCTYPE html>
 <html lang="uz">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio</title>
-    <link type="text/css" rel="stylesheet" href="styles.css">
-    <script type="application/javascript" src="composeApp.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anas' Portfolio</title>
+
+  <link type="text/css" rel="stylesheet" href="styles.css">
+
+  <link rel="preload" href="./composeResources/portfolio.composeapp.generated.resources/font/inter_bold.ttf" as="fetch"
+    type="font/ttf" crossorigin />
+  <link rel="preload" href="./composeResources/portfolio.composeapp.generated.resources/font/inter_light.ttf" as="fetch"
+    type="font/ttf" crossorigin />
+  <link rel="preload" href="./composeResources/portfolio.composeapp.generated.resources/font/inter_medium.ttf"
+    as="fetch" type="font/ttf" crossorigin />
+  <link rel="preload" href="./composeResources/portfolio.composeapp.generated.resources/font/inter_regular.ttf"
+    as="fetch" type="font/ttf" crossorigin />
+  <link rel="preload" href="./composeResources/portfolio.composeapp.generated.resources/font/inter_semibold.ttf"
+    as="fetch" type="font/ttf" crossorigin />
+
+  <meta property="og:site_name" content="Your Website Name" />
+
+  <script>
+    window.addEventListener("error", function (event) {
+      console.error(event.message);
+      if (event.message === "Script error.") {
+        event.stopImmediatePropagation();
+        return false;
+      }
+    }, true);
+  </script>
+
+  <script src="https://unpkg.com/wasm-feature-detect/dist/umd/index.js"></script>
+
+  <style>
+    #wasm-warning {
+      display: none;
+      background: #fff3cd;
+      color: #856404;
+      padding: 16px;
+      border: 1px solid #ffeeba;
+      margin: 20px;
+      font-family: sans-serif;
+    }
+
+    #loader {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .spinner {
+      width: 48px;
+      height: 48px;
+      animation: spin 1s linear infinite;
+    }
+
+    .light {
+      background-color: #fff;
+    }
+
+    .light .spinner circle {
+      stroke: #000;
+    }
+
+    .dark {
+      background-color: #000;
+    }
+
+    .dark .spinner circle {
+      stroke: #fff;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
 </head>
+
 <body>
+  <div id="wasm-warning">
+    Sorry, this website can’t run on your current device or browser.
+    Some essential features it needs aren’t available here.
+
+    Please try opening it on a different device or update your browser if possible.
+  </div>
+
+  <div id="loader">
+    <svg class="spinner" viewBox="0 0 50 50">
+      <circle cx="25" cy="25" r="20" fill="none" stroke-width="5" stroke-linecap="round" stroke-dasharray="94.2 125.6"
+        transform="rotate(-90 25 25)" />
+    </svg>
+  </div>
+
+
+  <canvas id="rive-canvas" class="fab-icon" style="
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 240px;
+    height: 240px;
+    visibility: hidden;
+    pointer-events: none;
+    z-index: 10;
+  "></canvas>
+
+  <script>
+
+    const loader = document.getElementById("loader");
+    loader.classList.add(localStorage.getItem("theme") === "true" ? "dark" : "light");
+
+    Promise.all([
+      wasmFeatureDetect.gc()
+    ]).then(([gc]) => {
+      if (gc) {
+        const script1 = document.createElement('script');
+        script1.src = 'composeApp.js';
+        document.body.appendChild(script1);
+
+        const script2 = document.createElement('script');
+        const isAndroid = /Android/i.test(navigator.userAgent);
+        script2.src = isAndroid
+          ? "https://unpkg.com/@rive-app/webgl"
+          : "https://unpkg.com/@rive-app/webgl2";
+        script2.onload = () => {
+          const canvas = document.getElementById("rive-canvas");
+          window.riveInstance = new rive.Rive({
+            src: "chat_960.riv",
+            canvas: canvas,
+            stateMachines: "State Machine 1",
+            onLoad: () => {
+              window.riveInstance.resizeDrawingSurfaceToCanvas();
+            },
+          });
+          window.addEventListener("resize", () => {
+            window.riveInstance.resizeDrawingSurfaceToCanvas();
+          });
+        };
+        document.body.appendChild(script2);
+      } else {
+        loader.style.visibility = "hidden"
+        document.getElementById("wasm-warning").style.display = "block";
+      }
+    });
+  </script>
+
 </body>
+
 </html>
