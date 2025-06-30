@@ -151,8 +151,8 @@ fun AboutMe(
                 icon = Res.drawable.ic_resume,
                 onClick = {
                     val link = document.createElement("a") as HTMLAnchorElement
-                    link.href = "Anas_Resume.pdf"
-                    link.download = "anas_resume.pdf"
+                    link.href = "Anas_resume.pdf"
+                    link.download = "Anas_resume.pdf"
                     link.click()
                 }
             )

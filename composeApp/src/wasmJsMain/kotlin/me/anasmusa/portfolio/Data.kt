@@ -110,6 +110,10 @@ object Data {
             null,
             listOf(
                 Skill.Item(
+                    "Jetpack Compose",
+                    null
+                ),
+                Skill.Item(
                     "Dagger/Hilt",
                     null
                 ),
