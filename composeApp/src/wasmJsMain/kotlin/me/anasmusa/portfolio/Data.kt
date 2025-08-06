@@ -241,7 +241,7 @@ object Data {
                 Link(
                     icon = Res.drawable.ic_play,
                     title = "Google Play",
-                    link = "https://play.google.com/store/apps/details?id=uz.unical.salom.taxi.driver"
+                    link = "https://play.google.com/store/apps/details?id=uz.unical.salomtaxi.driver"
                 )
             )
         ),
@@ -268,7 +268,7 @@ object Data {
                 Link(
                     icon = Res.drawable.ic_play,
                     title = "Google Play",
-                    link = "https://play.google.com/store/apps/details?id=uz.unical.cardin.market"
+                    link = "https://play.google.com/store/apps/details?id=uz.unical.uygaayt.markett"
                 )
             )
         )
