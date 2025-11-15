@@ -3,7 +3,6 @@ package me.anasmusa.portfolio.chat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.Serializable
@@ -13,6 +12,8 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.encodeToJsonElement
 import org.w3c.dom.WebSocket
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 @Serializable
 class SocketRequest(
@@ -47,6 +48,7 @@ class Socket(
             )
     }
 
+    @OptIn(ExperimentalTime::class)
     fun start(scope: CoroutineScope) {
         createSocket()
 
@@ -126,8 +128,6 @@ class Socket(
                                             }else if (message.type == Message.Type.USER)
                                                 question = message.message
 
-                                            print("q: $question, \n a:$answer")
-
                                             if (question != null && answer != null){
                                                 it.add(0, MessageRequest.QA(question, answer))
                                                 question = null
@@ -137,7 +137,6 @@ class Socket(
                                             }
                                         }
                                     }
-                                    print("History: $it")
                                 }
                             )
                         )

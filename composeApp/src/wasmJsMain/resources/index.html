@@ -98,20 +98,7 @@
     </svg>
   </div>
 
-
-  <canvas id="rive-canvas" class="fab-icon" style="
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 240px;
-    height: 240px;
-    visibility: hidden;
-    pointer-events: none;
-    z-index: 10;
-  "></canvas>
-
   <script>
-
     const loader = document.getElementById("loader");
     loader.classList.add(localStorage.getItem("theme") === "true" ? "dark" : "light");
 
@@ -119,20 +106,26 @@
       wasmFeatureDetect.gc()
     ]).then(([gc]) => {
       if (gc) {
-        const script1 = document.createElement('script');
-        script1.src = 'composeApp.js';
-        document.body.appendChild(script1);
 
-        const script2 = document.createElement('script');
-        const isAndroid = /Android/i.test(navigator.userAgent);
-        script2.src = isAndroid
-          ? "https://unpkg.com/@rive-app/webgl"
-          : "https://unpkg.com/@rive-app/webgl2";
-        script2.onload = () => {
-          const canvas = document.getElementById("rive-canvas");
+        const riveCanvas = document.createElement("canvas");
+        riveCanvas.id = "rive-canvas";
+        riveCanvas.style.cssText = `
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 240px;
+              height: 240px;
+              visibility: hidden;
+              pointer-events: none;
+              z-index: 9999;
+            `;
+
+        const riveScript = document.createElement('script');
+        riveScript.src = "https://unpkg.com/@rive-app/webgl2";
+        riveScript.onload = () => {
           window.riveInstance = new rive.Rive({
             src: "chat_960.riv",
-            canvas: canvas,
+            canvas: riveCanvas,
             stateMachines: "State Machine 1",
             onLoad: () => {
               window.riveInstance.resizeDrawingSurfaceToCanvas();
@@ -141,8 +134,21 @@
           window.addEventListener("resize", () => {
             window.riveInstance.resizeDrawingSurfaceToCanvas();
           });
+
+          const composeScript = document.createElement("script");
+          composeScript.src = "composeApp.js";
+          composeScript.onload = () => {
+            const checkShadowRoot = setInterval(() => {
+              const shadowRoot = document.body.shadowRoot;
+              if (shadowRoot) {
+                clearInterval(checkShadowRoot);
+                shadowRoot.appendChild(riveCanvas);
+              }
+            }, 200)
+          }
+          document.body.appendChild(composeScript);
         };
-        document.body.appendChild(script2);
+        document.body.appendChild(riveScript);
       } else {
         loader.style.visibility = "hidden"
         document.getElementById("wasm-warning").style.display = "block";

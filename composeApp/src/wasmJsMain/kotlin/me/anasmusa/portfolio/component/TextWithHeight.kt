@@ -1,5 +1,6 @@
 package me.anasmusa.portfolio.component
 
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,11 +17,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 
 @Composable
-
 fun TextWithHeight(
     text: String,
     modifier: Modifier = Modifier,
     color: Color = Color.Unspecified,
+    autoSize: TextAutoSize? = null,
     fontSize: TextUnit = TextUnit.Unspecified,
     fontStyle: FontStyle? = null,
     fontWeight: FontWeight? = null,
@@ -40,6 +41,7 @@ fun TextWithHeight(
         text,
         modifier,
         color,
+        autoSize,
         fontSize,
         fontStyle,
         fontWeight,

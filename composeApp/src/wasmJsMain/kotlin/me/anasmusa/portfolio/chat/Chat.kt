@@ -73,7 +73,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
-import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import me.anasmusa.portfolio.BotAnimation
@@ -82,6 +81,8 @@ import me.anasmusa.portfolio.component.BouncingDots
 import me.anasmusa.portfolio.core.select
 import org.w3c.dom.events.Event
 import kotlin.math.min
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 
 external interface VisualViewport {
@@ -93,7 +94,7 @@ external interface VisualViewport {
 @JsName("visualViewport")
 external val visualViewport: VisualViewport
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class, ExperimentalTime::class)
 @Composable
 fun BoxWithConstraintsScope.Chat(
     isDarkTheme: Boolean,
@@ -102,16 +103,9 @@ fun BoxWithConstraintsScope.Chat(
     val viewModel = remember { ViewModel() }
     val state by viewModel.state.collectAsState()
 
-    var riveInitialized = remember { false }
     var newMessage by remember { mutableStateOf<Message?>(null) }
     var typedMessage by remember { mutableStateOf("") }
     val focusRequester = remember { FocusRequester() }
-
-    if (!riveInitialized) {
-        BotAnimation.init()
-        BotAnimation.play()
-        riveInitialized = true
-    }
 
     LaunchedEffect(viewModel) {
         viewModel.events.collect {
@@ -412,7 +406,6 @@ fun BoxWithConstraintsScope.Chat(
                             }
 
                             item(-2L) {
-                                print("first message")
                                 MessageCell(
                                     Message.Type.BOT,
                                     "Hi there! I'm Anas' AI assistant. Ask me anything about his experience, skills, or projects to get started.",

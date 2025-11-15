@@ -59,7 +59,6 @@ fun AnimationOverlay(
         ) {
             with(drawContext.canvas.nativeCanvas) {
                 val checkPoint = saveLayer(null, null)
-                print(animationType)
                 if (animationType is AnimationType.CIRCULAR_REVEAL) {
                     val maxRadius = hypot(size.width, size.height)
 

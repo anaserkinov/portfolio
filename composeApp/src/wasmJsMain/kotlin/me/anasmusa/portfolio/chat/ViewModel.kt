@@ -11,11 +11,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 data class ChatState(
     val loading: Boolean = true,
@@ -109,6 +110,7 @@ class ViewModel {
         socket.start(scope)
     }
 
+    @OptIn(ExperimentalTime::class)
     private fun send(){
         val messageId = ++lastMessageId
         val message = state.value.message.removeSuffix("\n")

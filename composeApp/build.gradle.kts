@@ -12,8 +12,8 @@ plugins {
 kotlin {
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
-        compilations.all {
-            kotlinOptions.freeCompilerArgs += "-Xwasm-use-new-exception-proposal"
+        compilerOptions {
+            freeCompilerArgs.add("-Xwasm-use-new-exception-proposal")
         }
         provider {
             outputModuleName = "composeApp"
@@ -43,6 +43,7 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+            implementation(compose.materialIconsExtended)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.kotlinx.datetime)

@@ -1,6 +1,7 @@
 package me.anasmusa.portfolio.main
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -124,7 +125,6 @@ private fun Toolbar(
     menu: @Composable () -> Unit,
     onMainMenuStateChanged: (visible: Boolean) -> Unit
 ) {
-    val scope = rememberCoroutineScope()
     val isTablet = isTablet()
     SubcomposeLayout (
         modifier = Modifier
@@ -211,6 +211,7 @@ fun Toolbar(
         content = {
             Row(
                 modifier = Modifier
+                    .background(MaterialTheme.colorScheme.background)
                     .fillMaxWidth()
                     .padding(vertical = padding),
                 verticalAlignment = Alignment.CenterVertically
