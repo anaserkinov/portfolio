@@ -41,10 +41,21 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(compose.materialIconsExtended)
+
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.kotlinx.datetime)
             implementation(libs.kotlin.serialization)
+            implementation(libs.shimmer)
+
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.serialization)
+
+            implementation(projects.shared)
+        }
+        wasmJsMain.dependencies {
+            implementation(libs.ktor.client.js)
         }
     }
 }

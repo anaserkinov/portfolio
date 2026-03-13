@@ -20,12 +20,9 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -60,7 +57,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.DialogProperties
 import kotlinx.browser.localStorage
 import kotlinx.browser.window
 import kotlinx.coroutines.launch
@@ -70,7 +66,7 @@ import me.anasmusa.portfolio.component.AnimationType
 import me.anasmusa.portfolio.core.Language
 import me.anasmusa.portfolio.core.Resource
 import me.anasmusa.portfolio.core.isTablet
-import me.anasmusa.portfolio.core.select
+import me.anasmusa.portfolio.core.deviceValue
 import me.anasmusa.portfolio.core.stringResource
 import me.anasmusa.portfolio.main.AboutMe
 import me.anasmusa.portfolio.main.Education
@@ -157,7 +153,7 @@ fun ResourceEnvironmentFix(lang: String?, content: @Composable () -> Unit) {
 private fun DrawerCell(title: Int, onClick: () -> Unit) {
     Box(
         modifier = Modifier
-            .padding(bottom = select(12, 24).dp)
+            .padding(bottom = deviceValue(12, 24).dp)
             .fillMaxWidth()
             .height(48.dp)
             .clickable(onClick = onClick)
@@ -167,7 +163,7 @@ private fun DrawerCell(title: Int, onClick: () -> Unit) {
         Text(
             text = stringResource(title),
             color = MaterialTheme.colorScheme.onBackground,
-            fontSize = select(13, 20).sp,
+            fontSize = deviceValue(13, 20).sp,
             fontWeight = FontWeight.Medium,
         )
     }
@@ -408,8 +404,8 @@ fun BoxWithConstraintsScope.AppScene(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        val max = select(36, 44)
-        val min = select(16, 24)
+        val max = deviceValue(36, 44)
+        val min = deviceValue(16, 24)
 
         val scrollOffset by remember {
             derivedStateOf {

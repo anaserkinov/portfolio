@@ -1,10 +1,10 @@
-package me.anasmusa.portfolio
+package me.anasmusa.portfolio.core
 
 import kotlinx.browser.window
 import kotlinx.coroutines.Runnable
 import org.w3c.dom.HTMLCanvasElement
-import org.w3c.dom.get
 import kotlin.js.JsString
+import kotlin.js.get
 
 @OptIn(ExperimentalWasmJsInterop::class)
 external class Rive {

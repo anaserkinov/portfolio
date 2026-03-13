@@ -2,23 +2,10 @@ package me.anasmusa.portfolio.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.text.PlatformParagraphStyle
-import androidx.compose.ui.text.PlatformSpanStyle
-import androidx.compose.ui.text.PlatformTextStyle
-import androidx.compose.ui.text.TextDecorationLineStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.font.createFontFamilyResolver
-import androidx.compose.ui.text.style.BaselineShift
-import androidx.compose.ui.text.style.LineHeightStyle
-import androidx.compose.ui.text.style.TextGeometricTransform
 import org.jetbrains.compose.resources.Font
-import portfolio.composeapp.generated.resources.Res
-import portfolio.composeapp.generated.resources.inter_bold
-import portfolio.composeapp.generated.resources.inter_medium
-import portfolio.composeapp.generated.resources.inter_light
-import portfolio.composeapp.generated.resources.inter_regular
-import portfolio.composeapp.generated.resources.inter_semibold
+import portfolio.composeapp.generated.resources.*
 
 @Composable
 private fun fontFamily() = FontFamily(

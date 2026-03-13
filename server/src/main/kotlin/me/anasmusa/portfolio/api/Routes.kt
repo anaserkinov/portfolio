@@ -37,8 +37,9 @@ fun Application.module() {
             call.respondBytes(file.readBytes(), contentType = ContentType.fromFilePath(filePath).firstOrNull())
         }
 
-        get("/portfolio/{type}"){
-            val response = when(val type = call.parameters["type"]!!){
+        get("/{type}"){
+            val type = call.pathParameters["type"]!!
+            var response = when(type){
                 SectionType.About.value -> JsonDatabase.get<AboutResponse>(type)
                 SectionType.Experience.value -> JsonDatabase.get<ExperienceResponse>(type)
                 SectionType.Education.value -> JsonDatabase.get<EducationResponse>(type)
@@ -52,10 +53,24 @@ fun Application.module() {
             }
             if (response == null)
                 call.respond(HttpStatusCode.NotFound)
-            else
+            else {
+                if (type == SectionType.Projects.value) {
+                    val isPrimary = call.queryParameters["isPrimary"]?.toBoolean()
+                    if (isPrimary == true) {
+                        response = (response as ProjectResponse).let { response ->
+                            response.copy(
+                                entities = response.entities.filter {
+                                    it.isPrimary
+                                }
+                            )
+                        }
+                    }
+                }
+
                 call.respond(
                     BaseResponse(response)
                 )
+            }
         }
     }
 }

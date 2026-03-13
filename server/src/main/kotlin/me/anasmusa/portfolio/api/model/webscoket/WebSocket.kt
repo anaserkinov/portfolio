@@ -22,7 +22,7 @@ import me.anasmusa.portfolio.ai.AI
 import me.anasmusa.portfolio.api.model.webscoket.message.MessageRequest
 import me.anasmusa.portfolio.api.model.webscoket.message.MessageResponse
 import me.anasmusa.portfolio.db.QdrantDatabase
-import me.anasmusa.portfolio.log
+import me.anasmusa.portfolio.core.log
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicLong
 import kotlin.collections.set

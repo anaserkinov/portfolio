@@ -10,7 +10,7 @@ import androidx.compose.ui.unit.dp
 import me.anasmusa.portfolio.Data
 import me.anasmusa.portfolio.component.InfoCell
 import me.anasmusa.portfolio.component.Title
-import me.anasmusa.portfolio.core.select
+import me.anasmusa.portfolio.core.deviceValue
 import kotlinx.datetime.format
 import me.anasmusa.portfolio.Strings
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -30,7 +30,7 @@ fun Experience(
             .padding(
                 start = horizontalPadding,
                 end = horizontalPadding,
-                bottom = select(150, 220).dp
+                bottom = deviceValue(150, 220).dp
             )
     ) {
 

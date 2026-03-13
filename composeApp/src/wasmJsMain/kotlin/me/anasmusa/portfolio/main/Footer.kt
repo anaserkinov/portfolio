@@ -1,9 +1,7 @@
 package me.anasmusa.portfolio.main
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -22,7 +20,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import me.anasmusa.portfolio.Strings
-import me.anasmusa.portfolio.core.select
+import me.anasmusa.portfolio.core.deviceValue
 import me.anasmusa.portfolio.core.stringResource
 
 @Composable
@@ -65,7 +63,7 @@ private fun Item(
         modifier = modifier,
         text = text,
         color = MaterialTheme.colorScheme.onBackground,
-        fontSize = select(10, 14).sp,
+        fontSize = deviceValue(10, 14).sp,
         textAlign = TextAlign.Center
     )
 }

@@ -1,4 +1,4 @@
-package me.anasmusa.portfolio
+package me.anasmusa.portfolio.core
 
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets

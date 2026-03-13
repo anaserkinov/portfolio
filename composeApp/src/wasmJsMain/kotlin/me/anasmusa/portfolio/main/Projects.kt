@@ -26,7 +26,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,7 +41,7 @@ import me.anasmusa.portfolio.component.Chip
 import me.anasmusa.portfolio.component.TextWithHeight
 import me.anasmusa.portfolio.component.Title
 import me.anasmusa.portfolio.core.isTablet
-import me.anasmusa.portfolio.core.select
+import me.anasmusa.portfolio.core.deviceValue
 import kotlinx.browser.window
 import kotlinx.datetime.format
 import me.anasmusa.portfolio.Strings
@@ -202,8 +201,8 @@ private fun Cell(project: Data.Project) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        val height = select(18, 36).dp
-        val size = select(8, 16).sp
+        val height = deviceValue(18, 36).dp
+        val size = deviceValue(8, 16).sp
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
@@ -266,7 +265,7 @@ fun Projects(
             Strings.projects
         )
 
-        Spacer(Modifier.height(select(6, 12).dp))
+        Spacer(Modifier.height(deviceValue(6, 12).dp))
 
         Data.projects.forEach {
             Cell(it)
@@ -279,8 +278,8 @@ fun Projects(
                     Cell(it)
                 }
             } else {
-                val height = select(18, 36).dp
-                val size = select(8, 16).sp
+                val height = deviceValue(18, 36).dp
+                val size = deviceValue(8, 16).sp
                 Chip(
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)

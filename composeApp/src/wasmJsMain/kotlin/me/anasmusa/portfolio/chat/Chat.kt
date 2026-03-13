@@ -75,10 +75,10 @@ import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import me.anasmusa.portfolio.BotAnimation
-import me.anasmusa.portfolio.Platform
+import me.anasmusa.portfolio.core.BotAnimation
+import me.anasmusa.portfolio.core.Platform
 import me.anasmusa.portfolio.component.BouncingDots
-import me.anasmusa.portfolio.core.select
+import me.anasmusa.portfolio.core.deviceValue
 import org.w3c.dom.events.Event
 import kotlin.math.min
 import kotlin.time.Clock
@@ -145,8 +145,8 @@ fun BoxWithConstraintsScope.Chat(
 
     val transition = updateTransition(targetState = expanded, label = "BoxTransition")
 
-    val fabSize = select(56, 64)
-    val padding = select(24, 32)
+    val fabSize = deviceValue(56, 64)
+    val padding = deviceValue(24, 32)
 
     val width by transition.animateDp(
         transitionSpec = { tween(500) },
@@ -179,11 +179,11 @@ fun BoxWithConstraintsScope.Chat(
         val maxHeight = this@Chat.maxHeight.value.toInt()
         val maxWidth = this@Chat.maxWidth.value.toInt()
 
-        val expandedBotSize = select(340, 380)
+        val expandedBotSize = deviceValue(340, 380)
         val botSize by transition.animateInt(
             transitionSpec = { tween(500) },
             label = "BotSize"
-        ) { if (it) expandedBotSize else select(240, 280) }
+        ) { if (it) expandedBotSize else deviceValue(240, 280) }
 
         val botStart by transition.animateInt(
             transitionSpec = { tween(500) },
@@ -198,7 +198,7 @@ fun BoxWithConstraintsScope.Chat(
                     start + (width - expandedBotSize) / 2
                 }
             } else
-                maxWidth - botSize - padding + select(92, 108)
+                maxWidth - botSize - padding + deviceValue(92, 108)
         }
 
         val botTop by transition.animateInt(
@@ -206,9 +206,9 @@ fun BoxWithConstraintsScope.Chat(
             label = "BotTop"
         ) {
             if (it)
-                -select(6, 4) / 2 * padding
+                -deviceValue(6, 4) / 2 * padding
             else
-                maxHeight - botSize - padding + select(106, 122)
+                maxHeight - botSize - padding + deviceValue(106, 122)
         }
 
         BotAnimation.update(
@@ -265,8 +265,8 @@ fun BoxWithConstraintsScope.Chat(
             }
 
             if (expanded) {
-                val botSize = select(116, 136).dp
-                val botPadding = (padding - select(6, 9)).dp
+                val botSize = deviceValue(116, 136).dp
+                val botPadding = (padding - deviceValue(6, 9)).dp
 
                 Box(
                     modifier = Modifier
@@ -305,7 +305,7 @@ fun BoxWithConstraintsScope.Chat(
                 Text(
                     text = "AI Assistant",
                     modifier = Modifier
-                        .padding(top = botSize - select(10, 12).dp)
+                        .padding(top = botSize - deviceValue(10, 12).dp)
                         .align(Alignment.TopCenter),
                     color = MaterialTheme.colorScheme.onBackground,
                 )
@@ -370,7 +370,7 @@ fun BoxWithConstraintsScope.Chat(
                                         modifier = Modifier
                                             .padding(start = 8.dp),
                                         text = "Thinking... hang tight! Make sure not to close this page.",
-                                        fontSize = select(9, 11).sp,
+                                        fontSize = deviceValue(9, 11).sp,
                                         color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f)
                                     )
                                     BouncingDots()

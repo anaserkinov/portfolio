@@ -25,13 +25,12 @@ import me.anasmusa.portfolio.Data
 import me.anasmusa.portfolio.component.Chip
 import me.anasmusa.portfolio.component.InfoCell
 import me.anasmusa.portfolio.component.Title
-import me.anasmusa.portfolio.core.select
+import me.anasmusa.portfolio.core.deviceValue
 import kotlinx.datetime.format
 import me.anasmusa.portfolio.Strings
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import me.anasmusa.portfolio.core.stringResource
 import portfolio.composeapp.generated.resources.Res
-import portfolio.composeapp.generated.resources.allStringResources
 import portfolio.composeapp.generated.resources.ic_edu
 import portfolio.composeapp.generated.resources.ic_hash
 import portfolio.composeapp.generated.resources.ic_lang
@@ -53,7 +52,7 @@ private fun LanguageCell(
                 pushStyle(SpanStyle(color = MaterialTheme.colorScheme.secondary))
                 append(stringResource(level))
             },
-            fontSize = select(13, 22).sp,
+            fontSize = deviceValue(13, 22).sp,
             fontWeight = FontWeight.Medium
         )
 
@@ -79,10 +78,10 @@ private fun SkillCell(item: Data.Skill, bottomSpace: Dp){
     if (item.title != null)
         Text(
             modifier = Modifier
-                .padding(bottom = select(3, 6).dp),
+                .padding(bottom = deviceValue(3, 6).dp),
             text = stringResource(item.title),
             color = MaterialTheme.colorScheme.onBackground,
-            fontSize = select(13, 22).sp,
+            fontSize = deviceValue(13, 22).sp,
             fontWeight = FontWeight.Medium
         )
     FlowRow(
@@ -90,8 +89,8 @@ private fun SkillCell(item: Data.Skill, bottomSpace: Dp){
         horizontalArrangement = Arrangement.spacedBy(11.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ){
-        val height = select(21, 30).dp
-        val size = select(10, 15).sp
+        val height = deviceValue(21, 30).dp
+        val size = deviceValue(10, 15).sp
         item.items.forEach {
             Chip(
                 height = height,
@@ -115,7 +114,7 @@ fun Education(
             .padding(
                 start = horizontalPadding,
                 end = horizontalPadding,
-                bottom = select(150, 220).dp
+                bottom = deviceValue(150, 220).dp
             )
     ) {
 
@@ -156,7 +155,7 @@ fun Education(
                 }
             )
             if (index != Data.languages.size - 1)
-                Spacer(Modifier.height(select(20, 28).dp))
+                Spacer(Modifier.height(deviceValue(20, 28).dp))
         }
 
         Spacer(Modifier.height(64.dp))
@@ -169,7 +168,7 @@ fun Education(
             SkillCell(
                 item,
                 if (Data.skills.getOrNull(index + 1)?.title != null)
-                    select(12, 20).dp
+                    deviceValue(12, 20).dp
                 else
                     4.dp
             )

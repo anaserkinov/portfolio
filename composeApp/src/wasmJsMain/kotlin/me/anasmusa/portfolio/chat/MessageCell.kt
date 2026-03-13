@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.datetime.LocalTime
 import me.anasmusa.portfolio.component.TextWithHeight
-import me.anasmusa.portfolio.core.select
+import me.anasmusa.portfolio.core.deviceValue
 
 @Composable
 fun MessageCell(
@@ -61,7 +61,7 @@ fun MessageCell(
                         .wrapContentWidth(),
                     text = text,
                     color = content,
-                    fontSize = select(15, 17).sp
+                    fontSize = deviceValue(15, 17).sp
                 )
             }
             TextWithHeight(
@@ -69,7 +69,7 @@ fun MessageCell(
                     .align(Alignment.End),
                 text = "${time.hour.toString().padStart(2, '0')}:${time.minute.toString().padStart(2, '0')}",
                 color = content.copy(alpha = 0.85f),
-                fontSize = select(10, 12).sp
+                fontSize = deviceValue(10, 12).sp
             )
         }
     }

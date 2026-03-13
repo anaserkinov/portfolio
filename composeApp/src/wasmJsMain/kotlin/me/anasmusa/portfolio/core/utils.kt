@@ -7,7 +7,7 @@ import me.anasmusa.portfolio.LocalWindowSize
 fun isTablet() = LocalWindowSize.current.width >= 768
 
 @Composable
-fun select(portrait: Int, landscape: Int) = if (isTablet()) landscape else portrait
+fun deviceValue(portrait: Int, landscape: Int) = if (isTablet()) landscape else portrait
 
 fun stringResource(key: Int) = Resource.strings[key]
 

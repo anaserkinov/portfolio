@@ -21,7 +21,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,7 +37,7 @@ import me.anasmusa.portfolio.Strings
 import me.anasmusa.portfolio.core.Language
 import me.anasmusa.portfolio.component.TextWithHeight
 import me.anasmusa.portfolio.core.isTablet
-import me.anasmusa.portfolio.core.select
+import me.anasmusa.portfolio.core.deviceValue
 import me.anasmusa.portfolio.core.stringResource
 import org.jetbrains.compose.resources.painterResource
 import portfolio.composeapp.generated.resources.Res
@@ -53,13 +52,13 @@ private fun Title(
 ) {
     TextWithHeight(
         modifier = Modifier
-            .padding(end = select(14, 34).dp)
+            .padding(end = deviceValue(14, 34).dp)
             .clip(RoundedCornerShape(8.dp))
             .clickable(onClick = onClick)
             .padding(horizontal = 8.dp, vertical = 8.dp),
         text = stringResource(title),
         color = MaterialTheme.colorScheme.onBackground,
-        fontSize = select(13, 20).sp,
+        fontSize = deviceValue(13, 20).sp,
         fontWeight = FontWeight.Medium
     )
 }
@@ -71,7 +70,7 @@ private fun LanguageSelector(
     onLanguageSelected: (Language) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
-    val padding = select(2, 4).dp
+    val padding = deviceValue(2, 4).dp
 
     Box(
         modifier = Modifier
@@ -179,7 +178,7 @@ private fun LangTheme(
         Icon(
             modifier = Modifier
                 .padding(8.dp)
-                .size(select(24, 36).dp),
+                .size(deviceValue(24, 36).dp),
             painter = painterResource(if (isDarkTheme) Res.drawable.ic_sun else Res.drawable.ic_moon),
             tint = MaterialTheme.colorScheme.onBackground,
             contentDescription = null
@@ -218,7 +217,7 @@ fun Toolbar(
             ) {
                 Spacer(modifier = Modifier.weight(1f))
 
-                Spacer(modifier = Modifier.width(select(12, 24).dp))
+                Spacer(modifier = Modifier.width(deviceValue(12, 24).dp))
 
                 Title(
                     title = Strings.about_me,
@@ -249,7 +248,7 @@ fun Toolbar(
 
                 LangTheme(isDarkTheme, lang, onThemeTogglePositioned, onThemeChange, onLangChange)
 
-                Spacer(modifier = Modifier.width(select(12, 24).dp))
+                Spacer(modifier = Modifier.width(deviceValue(12, 24).dp))
             }
         },
         menu = {
@@ -260,7 +259,7 @@ fun Toolbar(
                 verticalAlignment = Alignment.CenterVertically
             ) {
 
-                Spacer(modifier = Modifier.width(select(12, 24).dp))
+                Spacer(modifier = Modifier.width(deviceValue(12, 24).dp))
 
                 IconButton(
                     modifier = Modifier,
@@ -269,7 +268,7 @@ fun Toolbar(
                     Icon(
                         modifier = Modifier
                             .padding(8.dp)
-                            .size(select(24, 36).dp),
+                            .size(deviceValue(24, 36).dp),
                         painter = painterResource(Res.drawable.ic_hamburger),
                         tint = MaterialTheme.colorScheme.onBackground,
                         contentDescription = null
@@ -280,7 +279,7 @@ fun Toolbar(
 
                 LangTheme(isDarkTheme, lang, onThemeTogglePositioned, onThemeChange, onLangChange)
 
-                Spacer(modifier = Modifier.width(select(12, 24).dp))
+                Spacer(modifier = Modifier.width(deviceValue(12, 24).dp))
             }
         },
         onMainMenuStateChanged = onMainMenuStateChanged

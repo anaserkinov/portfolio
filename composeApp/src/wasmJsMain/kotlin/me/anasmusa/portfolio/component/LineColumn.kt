@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.dp
-import me.anasmusa.portfolio.core.select
+import me.anasmusa.portfolio.core.deviceValue
 
 @Composable
 fun LineColumn(
@@ -28,7 +28,7 @@ fun LineColumn(
                     strokeWidth = 1.dp.toPx()
                 )
             }
-            .padding(top = select(20, 40).dp)
+            .padding(top = deviceValue(20, 40).dp)
             .drawBehind {
                 drawCircle(
                     color = onBackground,

@@ -1,4 +1,4 @@
-package me.anasmusa.portfolio
+package me.anasmusa.portfolio.core
 
 object Config {
 

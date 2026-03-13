@@ -3,7 +3,6 @@ package me.anasmusa.portfolio.component
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
@@ -23,7 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import me.anasmusa.portfolio.core.select
+import me.anasmusa.portfolio.core.deviceValue
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
@@ -53,13 +52,13 @@ fun RootChip(
                 else
                     it
             }
-            .padding(horizontal = select(6, 12).dp),
+            .padding(horizontal = deviceValue(6, 12).dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (icon != null)
             Icon(
                 modifier = Modifier
-                    .height(select(16, 32).dp),
+                    .height(deviceValue(16, 32).dp),
                 painter = painterResource(icon),
                 tint = MaterialTheme.colorScheme.onSurface,
                 contentDescription = null
@@ -67,7 +66,7 @@ fun RootChip(
         Text(
             modifier = Modifier
                 .wrapContentHeight()
-                .padding(start = if (icon != null) select(2, 4).dp else 0.dp),
+                .padding(start = if (icon != null) deviceValue(2, 4).dp else 0.dp),
             text = text,
             color = MaterialTheme.colorScheme.onBackground,
             fontSize = size,

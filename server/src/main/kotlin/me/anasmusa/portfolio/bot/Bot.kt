@@ -14,7 +14,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.decodeFromStream
-import me.anasmusa.portfolio.Config
+import me.anasmusa.portfolio.core.Config
 import me.anasmusa.portfolio.db.JsonDatabase
 import me.anasmusa.portfolio.db.QdrantDatabase
 import java.io.File
