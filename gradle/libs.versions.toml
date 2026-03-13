@@ -9,6 +9,8 @@ genai = "1.42.0"
 protobuf = "4.34.0"
 androidx-lifecycle = "2.9.5"
 compose-multiplatform = "1.9.3"
+telegram-bot = "6.3.0"
+retrofit = "3.0.0"
 
 [libraries]
 logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
@@ -25,10 +27,12 @@ ktor-server-websocket = { module = "io.ktor:ktor-server-websockets", version.ref
 ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 
 kotlin-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlin-serialization" }
-protobuf = { module = "com.google.protobuf:protobuf-kotlin", version.ref = "protobuf" }
 
 qdrant = { group = "io.qdrant", name = "client", version.ref = "qdrant" }
 genai = { module = "com.google.genai:google-genai", version.ref = "genai" }
+
+telegram-bot = { module = "io.github.kotlin-telegram-bot.kotlin-telegram-bot:telegram", version.ref = "telegram-bot" }
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 
 [plugins]
 kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

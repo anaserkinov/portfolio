@@ -3,22 +3,13 @@ package me.anasmusa.portfolio
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
-import me.anasmusa.portfolio.ai.AI
 import me.anasmusa.portfolio.api.module
-import me.anasmusa.portfolio.db.Database
+import me.anasmusa.portfolio.bot.Bot
+import me.anasmusa.portfolio.db.QdrantDatabase
 
-
-var isDebug = false
-
-val ai = AI()
-val db = Database()
-
-fun main(args: Array<String>) {
-    isDebug = args.getOrNull(0) == "dev"
-
-//    if (!db.initialized){
-//        db.init(ai.getResumeEmbeddings())
-//    }
+suspend fun main() {
+    QdrantDatabase.init()
+    Bot.start()
 
     embeddedServer(
         Netty,

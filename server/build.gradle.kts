@@ -26,9 +26,11 @@ dependencies {
 
     implementation(libs.kotlin.serialization)
 
-    implementation(libs.protobuf)
     implementation(libs.qdrant)
     implementation(libs.genai)
+
+    implementation(libs.telegram.bot)
+    implementation(libs.retrofit)
 
     implementation(projects.shared)
 }

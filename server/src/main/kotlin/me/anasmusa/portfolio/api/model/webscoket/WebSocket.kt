@@ -18,10 +18,10 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromJsonElement
-import me.anasmusa.portfolio.ai
+import me.anasmusa.portfolio.ai.AI
 import me.anasmusa.portfolio.api.model.webscoket.message.MessageRequest
 import me.anasmusa.portfolio.api.model.webscoket.message.MessageResponse
-import me.anasmusa.portfolio.db
+import me.anasmusa.portfolio.db.QdrantDatabase
 import me.anasmusa.portfolio.log
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicLong
@@ -69,10 +69,10 @@ private suspend fun startWebSocket(){
         if (request.messageId != (messageIdByUser[request.userId] ?: 0L))
             continue
         try {
-            val context = db.find(
-                ai.embedText(request.message)
+            val context = QdrantDatabase.find(
+                AI.embedText(request.message)
             )
-            val aiResponse = ai.generate(
+            val aiResponse = AI.generate(
                 request.message,
                 context,
                 request.history

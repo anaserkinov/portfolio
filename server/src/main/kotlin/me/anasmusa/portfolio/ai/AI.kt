@@ -6,11 +6,7 @@ import com.google.genai.types.EmbedContentConfig
 import com.google.genai.types.GenerateContentConfig
 import com.google.genai.types.Part
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.json.Json
 import me.anasmusa.portfolio.api.model.webscoket.message.MessageRequest
-import me.anasmusa.portfolio.db.Database
-import java.io.File
 import kotlin.jvm.optionals.getOrNull
 
 private const val systemInstruction = """
@@ -33,52 +29,26 @@ private const val systemInstruction = """
     Here is context for current question:
 """
 
-class AI {
+object AI {
 
     private val ai = Client()
 
-    fun getResumeEmbeddings(): List<ResumeEmbeddings>{
-        val chunksFile = File("data/resume-chunks.json")
-        if (chunksFile.exists())
-            return Json.decodeFromString(chunksFile.readText())
-
-        val resumeItems = Json.decodeFromString<List<ResumeItem>>(
-            Database::class.java.classLoader.getResource("resume.json").readText()
-        )
-
-        val resumeEmbeddings = arrayListOf<ResumeEmbeddings>()
-        resumeItems.forEachIndexed { index, resumeItem ->
-            println(index)
-            ai.models.embedContent(
-                "gemini-embedding-exp-03-07",
-                resumeItem.text,
-                EmbedContentConfig.builder()
-                    .outputDimensionality(768)
-                    .taskType("RETRIEVAL_DOCUMENT")
-                    .build()
-            ).let {
-                it.embeddings().getOrNull()?.forEachIndexed { _, contentEmbedding ->
-                    resumeEmbeddings.add(
-                        ResumeEmbeddings(
-                            resumeItem.id,
-                            resumeItem.text,
-                            contentEmbedding.values().getOrNull() ?: emptyList()
-                        )
-                    )
-                }
-            }
-            runBlocking {
-                delay(15 * 1000)
+    suspend fun embed(text: String): List<List<Float>> {
+        delay(10_000)
+        val result = arrayListOf<List<Float>>()
+        ai.models.embedContent(
+            "gemini-embedding-exp-03-07",
+            text,
+            EmbedContentConfig.builder()
+                .outputDimensionality(768)
+                .taskType("RETRIEVAL_DOCUMENT")
+                .build()
+        ).let {
+            it.embeddings().getOrNull()?.forEachIndexed { _, contentEmbedding ->
+                result.add(contentEmbedding.values().getOrNull() ?: emptyList())
             }
         }
-
-        chunksFile.parentFile.mkdir()
-        chunksFile.createNewFile()
-        chunksFile.writeText(
-            Json { prettyPrint = true }.encodeToString(resumeEmbeddings)
-        )
-
-        return resumeEmbeddings
+        return result
     }
 
     fun embedText(text: String): List<Float> {

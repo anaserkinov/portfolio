@@ -1,0 +1,9 @@
+package me.anasmusa.portfolio
+
+object Config {
+
+    val ADMIN_BOT_TOKEN: String by lazy { System.getenv("ADMIN_BOT_TOKEN") }
+    val ADMIN_BOT_WEBHOOK_URL: String = System.getenv("ADMIN_BOT_WEBHOOK_URL")
+    val ADMIN_TG_ID: Long by lazy { System.getenv("ADMIN_TG_ID").toLong() }
+
+}
