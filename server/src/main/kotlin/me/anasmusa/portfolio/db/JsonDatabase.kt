@@ -45,7 +45,8 @@ object JsonDatabase {
                 file.writeText(Json.encodeToString(element))
             }
             true
-        } catch (_: Exception){
+        } catch (e: Exception){
+            e.printStackTrace()
             false
         }
     }

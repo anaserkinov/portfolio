@@ -1,37 +1,33 @@
-package me.anasmusa.portfolio
+package me.anasmusa.portfolio.core
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.format.DateTimeFormat
 import kotlinx.datetime.format.MonthNames
+import me.anasmusa.portfolio.Strings
+import me.anasmusa.portfolio.api.model.AboutResponse
+import me.anasmusa.portfolio.api.model.LanguageResponse
+import me.anasmusa.portfolio.api.model.SkillResponse
 import org.jetbrains.compose.resources.DrawableResource
-import portfolio.composeapp.generated.resources.Res
-import portfolio.composeapp.generated.resources.ic_android
-import portfolio.composeapp.generated.resources.ic_autostatus
-import portfolio.composeapp.generated.resources.ic_bito
-import portfolio.composeapp.generated.resources.ic_compose
-import portfolio.composeapp.generated.resources.ic_github
-import portfolio.composeapp.generated.resources.ic_globe_24
-import portfolio.composeapp.generated.resources.ic_market
-import portfolio.composeapp.generated.resources.ic_play
-import portfolio.composeapp.generated.resources.ic_portfolio
-import portfolio.composeapp.generated.resources.ic_server
-import portfolio.composeapp.generated.resources.ic_snowflake
-import portfolio.composeapp.generated.resources.ic_taxi
-import portfolio.composeapp.generated.resources.ic_telegram
-
+import portfolio.composeapp.generated.resources.*
 
 object Data {
 
-    const val linkedin: String = "https://linkedin.com/in/anas-erkinjonov"
-    const val github: String = "https://github.com/anaserkinov"
-    const val email = "anaserkinjonov@gmail.com"
-    const val telegram = "https://t.me/anas_erkinjonov"
+    var about by mutableStateOf<AboutResponse?>(null)
+    var experience by mutableStateOf<me.anasmusa.portfolio.data.model.Experience?>(null)
+    var education by mutableStateOf<me.anasmusa.portfolio.data.model.Education?>(null)
+    var language by mutableStateOf<LanguageResponse?>(null)
+    var skills by mutableStateOf<SkillResponse?>(null)
+
+    const val telegram = ""
     const val cv: String = ""
 
     var lang: String = "en"
         set(value) {
             field = value
-            dateFormatter = LocalDate.Format {
+            dateFormatter = LocalDate.Companion.Format {
                 monthName(MonthNames(getMonths()))
                 chars(" ")
                 year()
@@ -41,147 +37,147 @@ object Data {
     lateinit var dateFormatter: DateTimeFormat<LocalDate>
         private set
 
-    val experience = listOf(
-        Experience(
-            "Unical",
-            LocalDate(2021, 6, 1),
-            null,
-            Strings.job_position_unical,
-            listOf(
-                Strings.job_description_unical_0,
-                Strings.job_description_unical_1,
-                Strings.job_description_unical_2,
-                Strings.job_description_unical_3,
-                Strings.job_description_unical_4,
-                Strings.job_description_unical_5,
-                Strings.job_description_unical_6,
-                Strings.job_description_unical_7,
-                Strings.job_description_unical_8,
-                Strings.job_description_unical_9
-            )
-        ),
-        Experience(
-            "Upwork",
-            LocalDate(2021, 2, 1),
-            LocalDate(2021, 6, 1),
-            Strings.job_position_upwork,
-            listOf(
-                Strings.job_description_upwork_0,
-                Strings.job_description_upwork_1,
-                Strings.job_description_upwork_2,
-                Strings.job_description_upwork_3
-            )
-        )
-    )
+//    val experience = listOf(
+//        Experience(
+//            "Unical",
+//            LocalDate(2021, 6, 1),
+//            null,
+//            Strings.job_position_unical,
+//            listOf(
+//                Strings.job_description_unical_0,
+//                Strings.job_description_unical_1,
+//                Strings.job_description_unical_2,
+//                Strings.job_description_unical_3,
+//                Strings.job_description_unical_4,
+//                Strings.job_description_unical_5,
+//                Strings.job_description_unical_6,
+//                Strings.job_description_unical_7,
+//                Strings.job_description_unical_8,
+//                Strings.job_description_unical_9
+//            )
+//        ),
+//        Experience(
+//            "Upwork",
+//            LocalDate(2021, 2, 1),
+//            LocalDate(2021, 6, 1),
+//            Strings.job_position_upwork,
+//            listOf(
+//                Strings.job_description_upwork_0,
+//                Strings.job_description_upwork_1,
+//                Strings.job_description_upwork_2,
+//                Strings.job_description_upwork_3
+//            )
+//        )
+//    )
 
-    val education = listOf(
-        Education(
-            Strings.education_tuit_title,
-            Strings.education_tuit_field,
-            LocalDate(2019, 9, 1),
-            LocalDate(2021, 4, 1),
-            false,
-            listOf(
-                Strings.education_description_tuit_0
-            )
-        )
-    )
-
-    val languages = listOf(
-        Language("uz", Strings.uz, "native", Strings.native),
-        Language("en", Strings.en, "b2", Strings.b2)
-    )
-
-    val skills = listOf(
-        Skill(
-            Strings.proficient,
-            listOf(
-                Skill.Item(
-                    "Kotlin",
-                    null
-                ),
-                Skill.Item(
-                    "Java",
-                    null
-                )
-            )
-        ),
-        Skill(
-            null,
-            listOf(
-                Skill.Item(
-                    "Jetpack Compose",
-                    null
-                ),
-                Skill.Item(
-                    "Dagger/Hilt",
-                    null
-                ),
-                Skill.Item(
-                    "Coroutines/RxJava",
-                    null
-                ),
-                Skill.Item(
-                    "SQLite",
-                    null
-                ),
-                Skill.Item(
-                    "Socket/RESTful APIs",
-                    null
-                ),
-                Skill.Item(
-                    "MVVM/MVI",
-                    null
-                ),
-                Skill.Item(
-                    "Unit/UI Testing",
-                    null
-                ),
-                Skill.Item(
-                    "Git",
-                    null
-                ),
-                Skill.Item(
-                    "Docker",
-                    null
-                )
-            )
-        ),
-        Skill(
-            Strings.competent,
-            listOf(
-                Skill.Item(
-                    "Kotlin Multiplatform",
-                    null
-                ),
-                Skill.Item(
-                    "Compose Multiplatform",
-                    null
-                )
-            )
-        ),
-        Skill(
-            Strings.familiar,
-            listOf(
-                Skill.Item(
-                    "C/C++",
-                    null
-                ),
-                Skill.Item(
-                    "Android NDK",
-                    null
-                ),
-                Skill.Item(
-                    "CMake",
-                    null
-                ),
-                Skill.Item(
-                    "GraphQL",
-                    null
-                )
-            )
-        )
-    )
+//    val education = listOf(
+//        Education(
+//            Strings.education_tuit_title,
+//            Strings.education_tuit_field,
+//            LocalDate(2019, 9, 1),
+//            LocalDate(2021, 4, 1),
+//            false,
+//            listOf(
+//                Strings.education_description_tuit_0
+//            )
+//        )
+//    )
+//
+//    val languages = listOf(
+//        Language("uz", Strings.uz, "native", Strings.native),
+//        Language("en", Strings.en, "b2", Strings.b2)
+//    )
+//
+//    val skills = listOf(
+//        Skill(
+//            Strings.proficient,
+//            listOf(
+//                Skill.Item(
+//                    "Kotlin",
+//                    null
+//                ),
+//                Skill.Item(
+//                    "Java",
+//                    null
+//                )
+//            )
+//        ),
+//        Skill(
+//            null,
+//            listOf(
+//                Skill.Item(
+//                    "Jetpack Compose",
+//                    null
+//                ),
+//                Skill.Item(
+//                    "Dagger/Hilt",
+//                    null
+//                ),
+//                Skill.Item(
+//                    "Coroutines/RxJava",
+//                    null
+//                ),
+//                Skill.Item(
+//                    "SQLite",
+//                    null
+//                ),
+//                Skill.Item(
+//                    "Socket/RESTful APIs",
+//                    null
+//                ),
+//                Skill.Item(
+//                    "MVVM/MVI",
+//                    null
+//                ),
+//                Skill.Item(
+//                    "Unit/UI Testing",
+//                    null
+//                ),
+//                Skill.Item(
+//                    "Git",
+//                    null
+//                ),
+//                Skill.Item(
+//                    "Docker",
+//                    null
+//                )
+//            )
+//        ),
+//        Skill(
+//            Strings.competent,
+//            listOf(
+//                Skill.Item(
+//                    "Kotlin Multiplatform",
+//                    null
+//                ),
+//                Skill.Item(
+//                    "Compose Multiplatform",
+//                    null
+//                )
+//            )
+//        ),
+//        Skill(
+//            Strings.familiar,
+//            listOf(
+//                Skill.Item(
+//                    "C/C++",
+//                    null
+//                ),
+//                Skill.Item(
+//                    "Android NDK",
+//                    null
+//                ),
+//                Skill.Item(
+//                    "CMake",
+//                    null
+//                ),
+//                Skill.Item(
+//                    "GraphQL",
+//                    null
+//                )
+//            )
+//        )
+//    )
 
     val projects = listOf(
         Project(
@@ -430,7 +426,7 @@ object Data {
     )
 
     private fun getMonths() = if (lang == "en")
-        MonthNames.ENGLISH_ABBREVIATED.names
+        MonthNames.Companion.ENGLISH_ABBREVIATED.names
     else if (lang == "uz")
         listOf(
             "Yanvar",
@@ -462,4 +458,3 @@ object Data {
             "Dekabr"
         )
 }
-

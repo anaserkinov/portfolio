@@ -2,62 +2,91 @@ package me.anasmusa.portfolio.main
 
 import androidx.compose.foundation.BasicTooltipBox
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberBasicTooltipState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.TooltipDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import me.anasmusa.portfolio.Data
+import coil3.compose.AsyncImage
+import kotlinx.browser.window
+import me.anasmusa.portfolio.Strings
+import me.anasmusa.portfolio.api.model.ProjectResponse
+import me.anasmusa.portfolio.api.model.System
 import me.anasmusa.portfolio.component.Chip
 import me.anasmusa.portfolio.component.TextWithHeight
 import me.anasmusa.portfolio.component.Title
-import me.anasmusa.portfolio.core.isTablet
-import me.anasmusa.portfolio.core.deviceValue
-import kotlinx.browser.window
-import kotlinx.datetime.format
-import me.anasmusa.portfolio.Strings
-import org.jetbrains.compose.resources.ExperimentalResourceApi
-import me.anasmusa.portfolio.core.stringResource
+import me.anasmusa.portfolio.core.*
 import org.jetbrains.compose.resources.painterResource
 import portfolio.composeapp.generated.resources.Res
+import portfolio.composeapp.generated.resources.ic_android
 import portfolio.composeapp.generated.resources.ic_chevron_down
 import portfolio.composeapp.generated.resources.ic_code
 
-@OptIn(
-    ExperimentalResourceApi::class, ExperimentalMaterial3Api::class,
-    ExperimentalFoundationApi::class
-)
 @Composable
-private fun Cell(project: Data.Project) {
+fun ProjectSection(
+    modifier: Modifier,
+    data: ProjectResponse?,
+    isAllLoading: Boolean,
+    loadMore: () -> Unit
+) {
+
+    LazyColumn(
+        modifier = modifier
+            .fillMaxWidth()
+    ) {
+        item {
+            Title(
+                Res.drawable.ic_code,
+                Strings.projects
+            )
+
+            Spacer(Modifier.height(deviceValue(6, 12).dp))
+        }
+
+        data?.let { data ->
+            items(data.entities) {
+                Cell(it)
+            }
+
+            if (isAllLoading){
+
+            } else if (data.entities.size < data.totalCount) {
+                item {
+                    val height = deviceValue(18, 36).dp
+                    val size = deviceValue(8, 16).sp
+                    Chip(
+                        modifier = Modifier
+                            .padding(bottom = 20.dp),
+                        height = height,
+                        size = size,
+                        text = "Show more",
+                        icon = Res.drawable.ic_chevron_down,
+                        onClick = loadMore
+                    )
+                }
+            }
+        } ?: run {
+
+        }
+    }
+
+}
+
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@Composable
+private fun Cell(project: ProjectResponse.Entity) {
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -80,13 +109,13 @@ private fun Cell(project: Data.Project) {
                 .padding(bottom = 2.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
+            AsyncImage(
+                model = project.logoUrl.withDownloadBaseUrl(),
+                contentDescription = null,
                 modifier = Modifier
                     .padding(end = 16.dp)
                     .size(56.dp)
                     .clip(RoundedCornerShape(8.dp)),
-                painter = painterResource(project.logo),
-                contentDescription = null
             )
             Text(
                 modifier = Modifier
@@ -97,9 +126,17 @@ private fun Cell(project: Data.Project) {
                 fontWeight = FontWeight.SemiBold
             )
 
-            val tooltipPositionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider()
+            val tooltipPositionProvider = TooltipDefaults.rememberTooltipPositionProvider(
+                positioning = TooltipAnchorPosition.Above
+            )
 
-            project.systems.forEach {
+            project.systems.forEach { system ->
+                val (icon, name, isTintable) = when (system) {
+                    System.Android -> {
+                        Triple(Res.drawable.ic_android, Strings.android_app, false)
+                    }
+                }
+
                 BasicTooltipBox(
                     positionProvider = tooltipPositionProvider,
                     state = rememberBasicTooltipState(),
@@ -108,11 +145,11 @@ private fun Cell(project: Data.Project) {
                             modifier = Modifier
                                 .padding(start = 6.dp)
                                 .size(20.dp),
-                            painter = painterResource(it.icon),
-                            tint = if (it.isTintUnspecified)
-                                Color.Unspecified
+                            painter = painterResource(icon),
+                            tint = if (isTintable)
+                                MaterialTheme.colorScheme.onBackground
                             else
-                                MaterialTheme.colorScheme.onBackground,
+                                Color.Unspecified,
                             contentDescription = null
                         )
                     },
@@ -123,7 +160,7 @@ private fun Cell(project: Data.Project) {
                                 .widthIn(max = 300.dp)
                                 .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(8.dp))
                                 .padding(8.dp),
-                            text = stringResource(it.title),
+                            text = stringResource(name),
                             color = MaterialTheme.colorScheme.onSurface,
                             fontSize = descriptionSize
                         )
@@ -163,18 +200,8 @@ private fun Cell(project: Data.Project) {
 
             Spacer(modifier = Modifier.weight(1f))
 
-            val date = remember {
-                if (project.startDate == project.endDate)
-                    project.startDate.year.toString()
-                else{
-                    project.startDate.format(Data.dateFormatter) + " - " + if (project.endDate != null)
-                        project.endDate.format(Data.dateFormatter)
-                    else
-                        stringResource(Strings.present)
-                }
-            }
             Text(
-                date,
+                text = project.date,
                 color = MaterialTheme.colorScheme.onBackground,
                 fontSize = descriptionSize,
                 lineHeight = descriptionSize
@@ -182,7 +209,7 @@ private fun Cell(project: Data.Project) {
         }
         Text(
             modifier = Modifier,
-            text = stringResource(project.description),
+            text = project.description.short,
             color = MaterialTheme.colorScheme.onBackground,
             fontSize = descriptionSize
         )
@@ -191,11 +218,9 @@ private fun Cell(project: Data.Project) {
             modifier = Modifier
                 .padding(start = 16.dp, top = 8.dp)
         ) {
-            project.subDescription.forEachIndexed { index, item ->
-                Spacer(
-                    modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
-                )
-                ProjectInfo(item, itemSize)
+            project.description.items.forEach { item ->
+                Spacer(modifier = Modifier.padding(top = 4.dp, bottom = 4.dp))
+                ProjectInfo(item.value, itemSize)
             }
         }
 
@@ -207,13 +232,14 @@ private fun Cell(project: Data.Project) {
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             project.links.forEach {
+                val (text, icon) = it.textAndIcon()
                 Chip(
                     height = height,
                     size = size,
-                    text = it.title,
-                    icon = it.icon,
+                    text = text,
+                    icon = icon,
                     onClick = {
-                        window.open(it.link, "_blank")
+                        window.open(it.value, "_blank")
                     }
                 )
             }
@@ -224,7 +250,7 @@ private fun Cell(project: Data.Project) {
 }
 
 @Composable
-private fun ProjectInfo(text: Int, fontSize: TextUnit) {
+private fun ProjectInfo(text: String, fontSize: TextUnit) {
     Row(
         modifier = Modifier,
         verticalAlignment = Alignment.CenterVertically
@@ -240,61 +266,11 @@ private fun ProjectInfo(text: Int, fontSize: TextUnit) {
         Text(
             modifier = Modifier
                 .padding(start = 16.dp),
-            text = stringResource(text),
+            text = text,
             color = MaterialTheme.colorScheme.onBackground,
             fontSize = fontSize,
             fontWeight = FontWeight.Medium
         )
 
     }
-}
-
-@Composable
-fun Projects(
-    horizontalPadding: Dp
-) {
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = horizontalPadding)
-    ) {
-
-        Title(
-            Res.drawable.ic_code,
-            Strings.projects
-        )
-
-        Spacer(Modifier.height(deviceValue(6, 12).dp))
-
-        Data.projects.forEach {
-            Cell(it)
-        }
-
-        if (Data.otherProjects.isNotEmpty()){
-            var showMore by remember { mutableStateOf(false) }
-            if (showMore){
-                Data.otherProjects.forEach {
-                    Cell(it)
-                }
-            } else {
-                val height = deviceValue(18, 36).dp
-                val size = deviceValue(8, 16).sp
-                Chip(
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(bottom = 20.dp),
-                    height = height,
-                    size = size,
-                    text = "Show more",
-                    icon = Res.drawable.ic_chevron_down,
-                    onClick = {
-                        showMore = true
-                    }
-                )
-            }
-        }
-
-    }
-
 }

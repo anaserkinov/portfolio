@@ -100,7 +100,7 @@ fun BoxWithConstraintsScope.Chat(
     isDarkTheme: Boolean,
     onStateChanged: (expanded: Boolean) -> Unit
 ) {
-    val viewModel = remember { ViewModel() }
+    val viewModel = remember { ChatViewModel() }
     val state by viewModel.state.collectAsState()
 
     var newMessage by remember { mutableStateOf<Message?>(null) }
@@ -110,7 +110,7 @@ fun BoxWithConstraintsScope.Chat(
     LaunchedEffect(viewModel) {
         viewModel.events.collect {
             when (it) {
-                is me.anasmusa.portfolio.chat.Event.OnNewMessage -> {
+                is ChatEvent.OnNewMessage -> {
                     focusRequester.requestFocus()
                     newMessage = it.message
                 }
@@ -127,7 +127,7 @@ fun BoxWithConstraintsScope.Chat(
                 typedMessage = builder.toString()
                 if (index == newMessage!!.message.length) {
                     BotAnimation.think(false)
-                    viewModel.handle(Intent.AddMessage(newMessage!!))
+                    viewModel.handle(ChatIntent.AddMessage(newMessage!!))
                     newMessage = null
                 }else
                     delay(20)
@@ -172,7 +172,7 @@ fun BoxWithConstraintsScope.Chat(
         BotAnimation.resize()
         onStateChanged(expanded)
         if (expanded)
-            viewModel.handle(Intent.Start)
+            viewModel.handle(ChatIntent.Start)
     }
 
     let {
@@ -438,7 +438,7 @@ fun BoxWithConstraintsScope.Chat(
                                     if (event.key == Key.Enter && event.type == KeyEventType.KeyUp) {
                                         if (!state.waitingForResponse && state.message.isNotBlank()) {
                                             BotAnimation.think(true)
-                                            viewModel.handle(Intent.Send)
+                                            viewModel.handle(ChatIntent.Send)
                                         }
                                         true
                                     } else {
@@ -447,7 +447,7 @@ fun BoxWithConstraintsScope.Chat(
                                 },
                             value = state.message,
                             onValueChange = {
-                                viewModel.handle(Intent.UpdateMessage(it))
+                                viewModel.handle(ChatIntent.UpdateMessage(it))
                             },
                             enabled = !state.waitingForResponse,
                             keyboardOptions = KeyboardOptions(
@@ -471,7 +471,7 @@ fun BoxWithConstraintsScope.Chat(
                             enabled = !state.waitingForResponse && state.message.isNotBlank(),
                             onClick = {
                                 BotAnimation.think(true)
-                                viewModel.handle(Intent.Send)
+                                viewModel.handle(ChatIntent.Send)
                             }
                         ) {
                             Icon(

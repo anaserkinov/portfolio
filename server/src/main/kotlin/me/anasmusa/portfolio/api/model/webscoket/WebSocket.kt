@@ -17,7 +17,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.decodeFromJsonElement
+import kotlinx.serialization.json.encodeToJsonElement
 import me.anasmusa.portfolio.ai.AI
 import me.anasmusa.portfolio.api.model.webscoket.message.MessageRequest
 import me.anasmusa.portfolio.api.model.webscoket.message.MessageResponse
@@ -84,7 +86,7 @@ private suspend fun startWebSocket(){
                 sendSerialized(
                     WebSocketResponse(
                         WebsocketEntityType.MESSAGE,
-                        Json.encodeToString(MessageResponse(request.messageId, aiResponse))
+                        Json.encodeToJsonElement(MessageResponse(request.messageId, aiResponse))
                     )
                 )
             }
@@ -96,7 +98,7 @@ private suspend fun startWebSocket(){
                 sendSerialized(
                     WebSocketResponse(
                         WebsocketEntityType.MESSAGE,
-                        Json.encodeToString(
+                        Json.encodeToJsonElement(
                             MessageResponse(
                                 request.messageId,
                                 "Unknown error"
@@ -131,7 +133,7 @@ private suspend fun DefaultWebSocketServerSession.webSocket(userId: Long){
                 sendSerialized(
                     WebSocketResponse(
                         WebsocketEntityType.ID,
-                        "$userId"
+                        JsonPrimitive("$userId")
                     )
                 )
             }

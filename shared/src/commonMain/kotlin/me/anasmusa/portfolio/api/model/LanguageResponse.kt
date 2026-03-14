@@ -9,7 +9,7 @@ class LanguageResponse(
     @Serializable
     class Entity(
         val code: String,
-        val name: Int,
+        val name: String,
         val level: String
     )
 }

@@ -29,13 +29,14 @@ object Resource {
         }
     }
 
+    @OptIn(ExperimentalWasmJsInterop::class)
     private fun readStringFile(locale: String, onLoad: (List<String>) -> Unit) {
         var path = "values"
         if (locale != "en")
             path += "-$locale"
         path = "$path/strings.xml"
         val response = window.fetch(path)
-        CoroutineScope(ioDispatcher).launch {
+        CoroutineScope(Dispatchers.Default).launch {
             val text = response.await<Response>().text().await<JsString>()
             withContext(Dispatchers.Main) {
                 onLoad(

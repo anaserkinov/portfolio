@@ -5,7 +5,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ProjectResponse(
-    val entities: List<Entity>
+    val entities: List<Entity>,
+    val totalCount: Int = entities.size,
 ){
 
     @Serializable

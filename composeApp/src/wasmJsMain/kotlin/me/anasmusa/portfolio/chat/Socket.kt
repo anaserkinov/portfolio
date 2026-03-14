@@ -5,29 +5,17 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.encodeToJsonElement
+import me.anasmusa.portfolio.api.model.webscoket.WebSocketRequest
+import me.anasmusa.portfolio.api.model.webscoket.WebSocketResponse
 import me.anasmusa.portfolio.api.model.webscoket.WebsocketEntityType
 import me.anasmusa.portfolio.api.model.webscoket.message.MessageRequest
 import me.anasmusa.portfolio.api.model.webscoket.message.MessageResponse
 import org.w3c.dom.WebSocket
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
-
-@Serializable
-class SocketRequest(
-    val type: Int,
-    val data: JsonElement?
-)
-
-@Serializable
-data class SocketResponse(
-    val type: Int,
-    val data: JsonElement
-)
 
 class Socket(
     private val onInitialized: () -> Unit,
@@ -60,7 +48,7 @@ class Socket(
         socket!!.onmessage = { event ->
             try {
                 val response =
-                    Json.decodeFromString<SocketResponse>((event.data as? JsString).toString())
+                    Json.decodeFromString<WebSocketResponse>((event.data as? JsString).toString())
                 println(response)
                 if (response.type == WebsocketEntityType.MESSAGE) {
                     val message = Json.decodeFromString<MessageResponse>(
@@ -98,7 +86,7 @@ class Socket(
         if (socket?.readyState == WebSocket.OPEN)
             socket?.send(
                 Json.encodeToString(
-                    SocketRequest(WebsocketEntityType.ID, null)
+                    WebSocketRequest(WebsocketEntityType.ID, null)
                 )
             )
     }
@@ -111,7 +99,7 @@ class Socket(
         if (socket?.readyState == WebSocket.OPEN)
             socket?.send(
                 Json.encodeToString(
-                    SocketRequest(
+                    WebSocketRequest(
                         WebsocketEntityType.MESSAGE,
                         Json.encodeToJsonElement(
                             MessageRequest(

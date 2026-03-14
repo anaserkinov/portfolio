@@ -1,19 +1,13 @@
 package me.anasmusa.portfolio.chat
 
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.browser.localStorage
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
@@ -25,40 +19,39 @@ data class ChatState(
     val waitingForResponse: Boolean = false
 )
 
-sealed class Intent{
-    data object Start: Intent()
-    data class UpdateMessage(val message: String): Intent()
-    data object Send: Intent()
-    data class AddMessage(val message: Message): Intent()
+sealed interface ChatIntent{
+    data object Start: ChatIntent
+    data class UpdateMessage(val message: String): ChatIntent
+    data object Send: ChatIntent
+    data class AddMessage(val message: Message): ChatIntent
 }
 
-sealed class Event {
-    data class OnNewMessage(val message: Message): Event()
+sealed interface ChatEvent {
+    data class OnNewMessage(val message: Message): ChatEvent
 }
 
-class ViewModel {
-    private val scope = CoroutineScope(Dispatchers.Default)
+class ChatViewModel: ViewModel() {
 
     private val _state = MutableStateFlow(ChatState())
     val state: StateFlow<ChatState>
         get() = _state
 
-    private val _events = Channel<Event>(Channel.BUFFERED)
-    val events: Flow<Event> = _events.receiveAsFlow()
+    private val _events = Channel<ChatEvent>(Channel.BUFFERED)
+    val events: Flow<ChatEvent> = _events.receiveAsFlow()
 
     private var lastMessageId = 0L
 
-    fun handle(intent: Intent){
+    fun handle(intent: ChatIntent){
         when(intent){
-            Intent.Start -> start()
+            ChatIntent.Start -> start()
 
-            is Intent.UpdateMessage -> {
+            is ChatIntent.UpdateMessage -> {
                 _state.update { it.copy(message = intent.message) }
             }
 
-            Intent.Send -> send()
+            ChatIntent.Send -> send()
 
-            is Intent.AddMessage -> {
+            is ChatIntent.AddMessage -> {
                 _state.update {
                     it.copy(
                         messages = arrayListOf(intent.message).also {
@@ -72,7 +65,7 @@ class ViewModel {
 
     private val socket = Socket(
         onInitialized = {
-            scope.launch {
+            viewModelScope.launch {
                 val messages = localStorage.getItem("messages")?.let {
                     Json.decodeFromString<List<Message>>(it)
                 }
@@ -86,15 +79,15 @@ class ViewModel {
             }
         },
         onGetNewMessage = {
-            scope.launch {
+            viewModelScope.launch {
                 _state.update { state ->
                     state.copy(
                         waitingForResponse = false
                     )
                 }
-                _events.send(Event.OnNewMessage(it))
+                _events.send(ChatEvent.OnNewMessage(it))
             }
-            scope.launch {
+            viewModelScope.launch {
                 localStorage.setItem(
                     "messages",
                     Json.encodeToString(
@@ -107,7 +100,7 @@ class ViewModel {
         }
     )
     private fun start(){
-        socket.start(scope)
+        socket.start(viewModelScope)
     }
 
     @OptIn(ExperimentalTime::class)
@@ -136,6 +129,5 @@ class ViewModel {
 
     fun onClear(){
         socket.close()
-        scope.cancel()
     }
 }
