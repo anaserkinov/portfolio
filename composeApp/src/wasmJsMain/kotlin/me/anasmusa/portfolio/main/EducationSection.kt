@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.valentinilk.shimmer.shimmer
 import me.anasmusa.portfolio.Strings
 import me.anasmusa.portfolio.component.InfoCell
 import me.anasmusa.portfolio.component.ShimmerInfoCell
@@ -27,8 +28,8 @@ fun EducationSection(
             .padding(bottom = 60.dp)
     ) {
         Title(
-            Res.drawable.ic_edu,
-            Strings.education
+            icon = Res.drawable.ic_edu,
+            title = Strings.education
         )
 
         data?.let { data ->
@@ -40,9 +41,10 @@ fun EducationSection(
                 )
             }
         } ?: run {
-            repeat(1) {
-                ShimmerInfoCell(1)
-            }
+            ShimmerInfoCell(
+                modifier = Modifier.shimmer(),
+                count = 1
+            )
         }
     }
 }

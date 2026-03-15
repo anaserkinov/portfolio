@@ -3,7 +3,9 @@ package me.anasmusa.portfolio.main
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -16,10 +18,13 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.valentinilk.shimmer.shimmer
 import me.anasmusa.portfolio.Strings
 import me.anasmusa.portfolio.api.model.LanguageResponse
+import me.anasmusa.portfolio.component.ShimmerBox
 import me.anasmusa.portfolio.component.Title
 import me.anasmusa.portfolio.core.deviceValue
+import me.anasmusa.portfolio.core.stringResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import portfolio.composeapp.generated.resources.Res
 import portfolio.composeapp.generated.resources.ic_lang
@@ -37,11 +42,11 @@ fun LanguageSection(
             .padding(bottom = 64.dp),
         verticalArrangement = Arrangement.spacedBy(deviceValue(20, 28).dp)
     ) {
+        Title(
+            icon = Res.drawable.ic_lang,
+            title = Strings.languages
+        )
         data?.let { data ->
-            Title(
-                Res.drawable.ic_lang,
-                Strings.languages
-            )
             data.entities.forEach { language ->
                 LanguageCell(
                     language.name,
@@ -49,7 +54,26 @@ fun LanguageSection(
                 )
             }
         } ?: run {
-
+            Column(modifier = Modifier.shimmer()) {
+                repeat(2) {
+                    ShimmerBox(
+                        modifier = Modifier
+                            .fillMaxWidth(0.25f)
+                            .height(deviceValue(16, 24).dp)
+                    )
+                    ShimmerBox(
+                        modifier = Modifier
+                            .padding(top = 8.dp)
+                            .fillMaxWidth(0.75f)
+                            .height(deviceValue(8, 16).dp)
+                    )
+                    Spacer(
+                        modifier = Modifier.height(
+                            deviceValue(20, 28).dp
+                        )
+                    )
+                }
+            }
         }
     }
 }
@@ -68,7 +92,19 @@ private fun LanguageCell(
                 append(name)
                 append(" - ")
                 pushStyle(SpanStyle(color = MaterialTheme.colorScheme.secondary))
-                append(level.uppercase())
+                append(
+                    stringResource(
+                        when(level){
+                            "a1" -> Strings.a1
+                            "a2" -> Strings.a2
+                            "b1" -> Strings.b1
+                            "b2" -> Strings.b2
+                            "c1" -> Strings.c1
+                            "c2" -> Strings.c2
+                            else -> Strings.native
+                        }
+                    )
+                )
             },
             fontSize = deviceValue(13, 22).sp,
             fontWeight = FontWeight.Medium
@@ -77,7 +113,7 @@ private fun LanguageCell(
         val colorPrimary = MaterialTheme.colorScheme.primary
         Canvas(
             modifier = Modifier.fillMaxWidth()
-                .padding(top = 16.dp)
+                .padding(top = deviceValue(8, 16).dp)
         ){
             val percentage = when(level){
                 "a1" -> 10

@@ -10,8 +10,8 @@ data class ProjectResponse(
 ){
 
     @Serializable
-    class Entity(
-        val logoUrl: String,
+    data class Entity(
+        @SerialName("logo_path") val logoPath: String,
         val title: String,
         val systems: List<System>,
         val date: String,
@@ -22,12 +22,12 @@ data class ProjectResponse(
     )
 
     @Serializable
-    class Description(
+    data class Description(
         val short: String,
         val items: List<Item>
     ) {
         @Serializable
-        class Item(
+        data class Item(
             val value: String
         )
     }

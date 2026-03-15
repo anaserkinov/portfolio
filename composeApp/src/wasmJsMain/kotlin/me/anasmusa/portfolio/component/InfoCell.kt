@@ -3,7 +3,6 @@ package me.anasmusa.portfolio.component
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,10 +14,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.valentinilk.shimmer.shimmer
 import me.anasmusa.portfolio.core.deviceValue
 import me.anasmusa.portfolio.core.isTablet
-import me.anasmusa.portfolio.core.stringResource
 
 @Composable
 fun InfoCell(
@@ -93,7 +90,10 @@ fun InfoCell(
 }
 
 @Composable
-fun ShimmerInfoCell(count: Int) {
+fun ShimmerInfoCell(
+    modifier: Modifier = Modifier,
+    count: Int
+) {
     val onBackground = MaterialTheme.colorScheme.onBackground
 
     val top: Dp
@@ -107,9 +107,8 @@ fun ShimmerInfoCell(count: Int) {
         bottom = 12.dp
     }
 
-    LineColumn (
-        modifier = Modifier
-            .shimmer()
+    LineColumn(
+        modifier = modifier
     ) {
         ShimmerBox(
             modifier = Modifier

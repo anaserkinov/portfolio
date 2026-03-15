@@ -50,7 +50,7 @@ fun AboutSection(
         Column(modifier = modifier) {
 
             AsyncImage(
-                data.photoUrl.withDownloadBaseUrl(),
+                data.photoPath.withDownloadBaseUrl(),
                 contentDescription = null,
                 modifier = Modifier
                     .size(deviceValue(53, 89).dp)
@@ -185,7 +185,6 @@ fun AboutSection(
                         shape = RoundedCornerShape(height/2)
                     )
                 }
-
             }
         }
     }

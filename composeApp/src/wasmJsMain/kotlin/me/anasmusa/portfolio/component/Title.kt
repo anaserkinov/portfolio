@@ -18,11 +18,12 @@ import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun Title(
+    modifier: Modifier = Modifier,
     icon: DrawableResource,
     title: Int
 ){
     Row(
-        modifier = Modifier
+        modifier = modifier
             .padding(bottom = deviceValue(16, 25).dp),
         verticalAlignment = Alignment.CenterVertically
     ){

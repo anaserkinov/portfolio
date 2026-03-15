@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="about_me">About Me</string>
     <string name="experience">Experience</string>
     <string name="education">Education</string>
@@ -18,11 +17,11 @@
     <string name="white_label_tip">An app that can be customized with your logo, name, and design</string>
     <string name="copy_message">Copied to clipboard</string>
     <string name="incomplete">Incomplete</string>
-    <string name="android_app">Android app</string>
-    <string name="react_web_app">React web app</string>
-    <string name="compose_web_app">Compose web app</string>
-    <string name="compose_lib">Compose library</string>
-    <string name="ktor_backend_service">Ktor backend service</string>
+
+    <string name="android">Android app</string>
+    <string name="react_js">React web app</string>
+    <string name="compose_multiplatform">Compose multiplatform</string>
+    <string name="ktor_server">Ktor server</string>
 
     <string name="uz">O'zbek</string>
     <string name="en">English</string>
@@ -39,43 +38,4 @@
     <string name="proficient">Proficient</string>
     <string name="competent">Competent</string>
     <string name="familiar">Familiar</string>
-
-    <string name="project_description_bito">Bito is an all-in-one ERP app that streamlines and optimizes operations for businesses of any size or industry. It offers an integrated solution for managing key enterprise processes.</string>
-    <string name="project_description_bito_0">Developed Bito, a ERP system from scratch, integrating modules for POS, inventory, finance, HR, logistics, and
-supply chain management.</string>
-    <string name="project_description_bito_1">Utilized Kotlin and Java in a multi-module MVVM architecture, employing Kotlin Coroutines for concurrency and
-Room for database management.</string>
-    <string name="project_description_bito_2">Implemented manual dependency injection, code-driven UI, and Firebase for real-time communication, following
-Scrum methodology.</string>
-    <string name="project_description_bito_3">Ensured high-quality code through CI/CD pipelines with GitLab Actions and thorough testing using JUnit and
-Espresso.</string>
-
-    <string name="project_description_taxi">Taxi Driver is a white-label mobile app that helps taxi drivers efficiently manage ride requests with features like real-time navigation, offline fare calculation, ride history, and driver ratings.</string>
-    <string name="project_description_taxi_0">Developed Taxi Driver, a mobile app designed for taxi drivers to manage ride requests, offering real-time navigation, offline fare calculation, ride history, and a driver rating system.</string>
-    <string name="project_description_taxi_1">Utilized Kotlin in an MVVM multi-module architecture, with Kotlin Coroutines for concurrency and Room for
-database management.</string>
-    <string name="project_description_taxi_2">Implemented Hilt for dependency injection, WebSocket and Firebase for real-time communication, and
-OpenStreetMap (OSM) for navigation services.</string>
-    <string name="project_description_taxi_3">Ensured seamless development using GitLab Actions for CI/CD, with a user interface built in XML.</string>
-
-    <string name="project_description_market">Market is a white-label e-commerce app offering a wide range of products—from groceries to electronics—with intuitive navigation, secure payments, and smooth order management for a seamless shopping experience.</string>
-    <string name="project_description_market_0">Developed the Market app, an e-commerce platform allowing users to browse, search, and purchase
-products across categories such as groceries, electronics, fashion, and home goods.</string>
-    <string name="project_description_market_1">Utilized Kotlin in a multi-module MVVM architecture with Kotlin Coroutines for concurrency, Room for database
-management, and Hilt for dependency injection.</string>
-    <string name="project_description_market_2">Integrated WebSocket and Firebase for real-time communication and followed Scrum methodology for agile
-development.</string>
-
-    <string name="project_description_portfolio">Personal portfolio web app showcasing my skills, projects, and experience, featuring an AI-powered chat interface that answers questions about my background in real time.</string>
-    <string name="project_description_portfolio_0">Developed a portfolio web app using Compose Multiplatform, featuring a responsive chat interface for real-time Q&amp;A about my skills and experience. Implemented real-time messaging using WebSockets on the client side.</string>
-    <string name="project_description_portfolio_1">Built the backend in Kotlin with Ktor, handling WebSocket communication and integrating Gemini API with Qdrant vector database for RAG-based semantic search. Embedded resume data into vector space to enable natural language Q&amp;A powered by AI.</string>
-
-    <string name="project_description_snowflake">A lightweight, customizable snowflake animation library for multiple platforms.</string>
-    <string name="project_description_snowflake_0">Created a lightweight, customizable snowflake animation library using Compose Multiplatform for Android, iOS, Desktop, and Web.</string>
-    <string name="project_description_snowflake_1">Set up a GitHub Actions CI/CD pipeline for automated release to Maven Central, including semantic versioning, artifact signing, and GitHub Releases.</string>
-
-    <string name="project_description_autostatus">A Telegram web app that allows Premium users to customize their status with auto-changing emojis based on predefined time intervals.</string>
-    <string name="project_description_autostatus_0">Developed a full-stack Telegram mini app for automated status updates, with a frontend built in TypeScript.</string>
-    <string name="project_description_autostatus_1">Build the backend in Kotlin using Ktor, with PostgreSQL for persistent user data and status scheduling.</string>
-
 </resources>

@@ -29,7 +29,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.*
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.valentinilk.shimmer.LocalShimmerTheme
+import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.defaultShimmerTheme
+import com.valentinilk.shimmer.rememberShimmer
 import com.valentinilk.shimmer.shimmerSpec
 import kotlinx.browser.localStorage
 import kotlinx.browser.window
@@ -134,9 +136,9 @@ private fun DrawerCell(title: Int, onClick: () -> Unit) {
 fun App() {
     var isDarkTheme by remember { mutableStateOf(false) }
     var lang by remember {
-        Data.lang = localStorage.getItem("lang") ?: "en"
+        Localization.lang = localStorage.getItem("lang") ?: "en"
         mutableStateOf(
-            when (Data.lang) {
+            when (Localization.lang) {
                 Language.UZBEK.isoFormat -> Language.UZBEK
                 Language.RUSSIAN.isoFormat -> Language.RUSSIAN
                 else -> Language.ENGLISH
@@ -257,7 +259,7 @@ fun App() {
                                             animationType = AnimationType.LRT()
                                             coroutineScope.launch {
                                                 val bitmap = graphicsLayer.toImageBitmap()
-                                                Data.lang = it.isoFormat
+                                                Localization.lang = it.isoFormat
                                                 lang = it
                                                 localStorage.setItem("lang", it.isoFormat)
                                                 snapshotImage = bitmap
@@ -412,12 +414,14 @@ fun BoxWithConstraintsScope.AppScene(
             (this@AppScene.maxWidth.value * 0.125f).dp
         else
             if (LocalWindowSize.current.width > 480) 48.dp else 20.dp
+
+        val shimmer = rememberShimmer(ShimmerBounds.View)
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize(),
             state = listState
         ) {
-            item(1) {
+            item(key = 1, contentType = 1) {
                 AboutSection(
                     modifier = Modifier.padding(horizontal = padding),
                     data = state.about,
@@ -427,7 +431,7 @@ fun BoxWithConstraintsScope.AppScene(
                     viewModel.handle(MainIntent.LoadAbout)
                 }
             }
-            item(2) {
+            item(key = 2, contentType = 2) {
                 ExperienceSection(
                     modifier = Modifier.padding(horizontal = padding),
                     data = state.experience,
@@ -436,7 +440,7 @@ fun BoxWithConstraintsScope.AppScene(
                     viewModel.handle(MainIntent.LoadExperience)
                 }
             }
-            item(3) {
+            item(key = 3, contentType = 3) {
                 EducationSection(
                     modifier = Modifier.padding(horizontal = padding),
                     data = state.education,
@@ -445,37 +449,34 @@ fun BoxWithConstraintsScope.AppScene(
                     viewModel.handle(MainIntent.LoadEducation)
                 }
             }
-//            item(4) {
-//                LanguageSection(
-//                    modifier = Modifier.padding(horizontal = padding),
-//                    data = state.language,
-//                )
-//                LaunchedEffect(Unit) {
-//                    viewModel.handle(MainIntent.LoadLanguage)
-//                }
-//            }
-//            item(5) {
-//                SkillsSection(
-//                    modifier = Modifier.padding(horizontal = padding),
-//                    data = state.skills,
-//                )
-//                LaunchedEffect(Unit) {
-//                    viewModel.handle(MainIntent.LoadSkill)
-//                }
-//            }
-//
-//            item(6) {
-//                ProjectSection(
-//                    modifier = Modifier.padding(horizontal = padding),
-//                    data = state.projects,
-//                    isAllLoading = state.isAllProjectsLoading,
-//                    loadMore = { viewModel.handle(MainIntent.LoadProjects(true)) },
-//                )
-//                LaunchedEffect(Unit) {
-//                    viewModel.handle(MainIntent.LoadProjects(false))
-//                }
-//            }
-            item(7) {
+            item(key = 4, contentType = 4) {
+                LanguageSection(
+                    modifier = Modifier.padding(horizontal = padding),
+                    data = state.language,
+                )
+                LaunchedEffect(Unit) {
+                    viewModel.handle(MainIntent.LoadLanguage)
+                }
+            }
+            item(key = 5, contentType = 5) {
+                SkillsSection(
+                    modifier = Modifier.padding(horizontal = padding),
+                    data = state.skills,
+                )
+                LaunchedEffect(Unit) {
+                    viewModel.handle(MainIntent.LoadSkill)
+                }
+            }
+
+            projectSection(
+                modifier = Modifier.padding(horizontal = padding),
+                shimmer = shimmer,
+                data = state.projects,
+                isAllLoading = state.isAllProjectsLoading,
+                loadProjects = { viewModel.handle(MainIntent.LoadProjects(it)) },
+            )
+
+            item(key = 6, contentType = 6) {
                 Footer(
                     horizontalPadding = padding
                 )

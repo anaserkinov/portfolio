@@ -8,7 +8,10 @@ import me.anasmusa.portfolio.data.network.ApiClient
 import org.jetbrains.compose.resources.DrawableResource
 import portfolio.composeapp.generated.resources.Res
 import portfolio.composeapp.generated.resources.ic_github
+import portfolio.composeapp.generated.resources.ic_globe
 import portfolio.composeapp.generated.resources.ic_linkedin
+import portfolio.composeapp.generated.resources.ic_mail
+import portfolio.composeapp.generated.resources.ic_play
 import portfolio.composeapp.generated.resources.ic_resume
 import portfolio.composeapp.generated.resources.ic_telegram
 
@@ -30,11 +33,20 @@ fun Link.textAndIcon(): Pair<String, DrawableResource> {
         LinkType.Github -> {
             Pair("GitHub", Res.drawable.ic_github)
         }
+        LinkType.Mail -> {
+            Pair("Mail", Res.drawable.ic_mail)
+        }
         LinkType.Telegram -> {
             Pair("Telegram", Res.drawable.ic_telegram)
         }
-        else -> {
+        LinkType.CV -> {
             Pair("CV", Res.drawable.ic_resume)
+        }
+        LinkType.GooglePlay -> {
+            Pair("Google Play", Res.drawable.ic_play)
+        }
+        LinkType.Website -> {
+            Pair("Website", Res.drawable.ic_globe)
         }
     }
 }

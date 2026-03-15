@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.valentinilk.shimmer.shimmer
 import me.anasmusa.portfolio.Strings
 import me.anasmusa.portfolio.component.InfoCell
 import me.anasmusa.portfolio.component.ShimmerInfoCell
@@ -30,8 +31,8 @@ fun ExperienceSection(
             )
     ) {
         Title(
-            Res.drawable.ic_case,
-            Strings.experience
+            icon = Res.drawable.ic_case,
+            title = Strings.experience
         )
 
         data?.let { data ->
@@ -43,10 +44,13 @@ fun ExperienceSection(
                 )
             }
         } ?: run {
-            repeat(2) {
-                ShimmerInfoCell(7)
+            Column(
+                modifier = Modifier.shimmer(),
+            ) {
+                repeat(2) {
+                    ShimmerInfoCell(count = 7)
+                }
             }
         }
-
     }
 }

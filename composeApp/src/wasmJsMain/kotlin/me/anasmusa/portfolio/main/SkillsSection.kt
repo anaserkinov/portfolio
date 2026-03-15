@@ -1,6 +1,7 @@
 package me.anasmusa.portfolio.main
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -8,15 +9,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.valentinilk.shimmer.shimmer
 import me.anasmusa.portfolio.Strings
 import me.anasmusa.portfolio.api.model.SkillResponse
 import me.anasmusa.portfolio.component.Chip
+import me.anasmusa.portfolio.component.ShimmerBox
 import me.anasmusa.portfolio.component.Title
 import me.anasmusa.portfolio.core.deviceValue
 import me.anasmusa.portfolio.core.stringResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import portfolio.composeapp.generated.resources.Res
 import portfolio.composeapp.generated.resources.ic_hash
+import kotlin.random.Random
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
@@ -30,12 +34,12 @@ fun SkillsSection(
             .padding(bottom = deviceValue(150, 220).dp)
     ) {
 
-        data?.let { data ->
-            Title(
-                Res.drawable.ic_hash,
-                Strings.skills
-            )
+        Title(
+            icon = Res.drawable.ic_hash,
+            title = Strings.skills
+        )
 
+        data?.let { data ->
             SkillCell(
                 Strings.proficient,
                 data.proficient
@@ -58,7 +62,18 @@ fun SkillsSection(
                 deviceValue(8, 16).dp
             ))
         } ?: run {
-
+            ShimmerSkillCell(Strings.proficient)
+            Spacer(modifier = Modifier.height(
+                deviceValue(8, 16).dp
+            ))
+            ShimmerSkillCell(Strings.competent)
+            Spacer(modifier = Modifier.height(
+                deviceValue(8, 16).dp
+            ))
+            ShimmerSkillCell(Strings.familiar)
+            Spacer(modifier = Modifier.height(
+                deviceValue(8, 16).dp
+            ))
         }
     }
 }
@@ -94,6 +109,40 @@ private fun SkillCell(
                 )
             }
         }
+        Spacer(Modifier.height(4.dp))
     }
-    Spacer(Modifier.height(4.dp))
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun ShimmerSkillCell(title: Int){
+    Text(
+        modifier = Modifier
+            .padding(bottom = deviceValue(3, 6).dp),
+        text = stringResource(title),
+        color = MaterialTheme.colorScheme.onBackground,
+        fontSize = deviceValue(13, 22).sp,
+        fontWeight = FontWeight.Medium
+    )
+    val verticalScape = deviceValue(4, 8).dp
+    FlowRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .shimmer(),
+        horizontalArrangement = Arrangement.spacedBy(11.dp),
+        verticalArrangement = Arrangement.spacedBy(verticalScape)
+    ){
+        val height = deviceValue(21, 30).dp
+        repeat(5){
+            ShimmerBox(
+                modifier = Modifier
+                    .width(
+                        deviceValue(60, 150).dp
+                    )
+                    .height(height),
+                shape = RoundedCornerShape(height/2)
+            )
+        }
+        Spacer(Modifier.height(verticalScape))
+    }
 }

@@ -2,6 +2,7 @@ package me.anasmusa.portfolio.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -139,7 +140,7 @@ class MainViewModel: ViewModel(){
     }
 
     private fun loadProjects(isPrimary: Boolean?) {
-        if (state.value.projects != null) return
+        if (state.value.projects != null && isPrimary != null) return
         if (isPrimary == null) {
             _state.update {
                 it.copy(isAllProjectsLoading = true)

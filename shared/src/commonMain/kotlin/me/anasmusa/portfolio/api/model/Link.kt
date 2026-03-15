@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-class Link(
+data class Link(
     val type: LinkType,
     val value: String,
 )
