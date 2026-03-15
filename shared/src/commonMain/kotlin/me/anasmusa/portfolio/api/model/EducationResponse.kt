@@ -10,9 +10,8 @@ class EducationResponse(
     class Entity(
         val university: String,
         val field: String,
-        val completed: String,
+        val completed: Boolean,
         val date: String,
-        val position: String,
         val items: List<Item>
     )
 

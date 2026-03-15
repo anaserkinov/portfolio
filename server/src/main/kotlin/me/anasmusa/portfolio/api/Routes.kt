@@ -1,27 +1,17 @@
 package me.anasmusa.portfolio.api
 
 import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.json
+import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
-import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.cors.routing.*
-import io.ktor.server.request.receiveText
-import io.ktor.server.response.respond
-import io.ktor.server.response.respondFile
-import io.ktor.server.routing.get
-import io.ktor.server.routing.post
-import io.ktor.server.routing.routing
-import kotlinx.serialization.json.Json
-import me.anasmusa.portfolio.api.model.AboutResponse
-import me.anasmusa.portfolio.api.model.BaseResponse
-import me.anasmusa.portfolio.api.model.EducationResponse
-import me.anasmusa.portfolio.api.model.ExperienceResponse
-import me.anasmusa.portfolio.api.model.LanguageResponse
-import me.anasmusa.portfolio.api.model.ProjectResponse
-import me.anasmusa.portfolio.api.model.SectionType
-import me.anasmusa.portfolio.api.model.SkillResponse
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
+import me.anasmusa.portfolio.api.model.*
 import me.anasmusa.portfolio.api.model.webscoket.setupWebSocket
 import me.anasmusa.portfolio.bot.Bot
+import me.anasmusa.portfolio.core.AppJson
 import me.anasmusa.portfolio.core.Config
 import me.anasmusa.portfolio.db.JsonDatabase
 import java.io.File
@@ -35,10 +25,7 @@ fun Application.module() {
     }
 
     install(ContentNegotiation) {
-        json(Json {
-            prettyPrint = true
-            explicitNulls = false
-        })
+        json(AppJson)
     }
 
     setupWebSocket()

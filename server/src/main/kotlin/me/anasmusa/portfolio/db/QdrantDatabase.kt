@@ -12,10 +12,10 @@ import io.qdrant.client.grpc.Points
 import io.qdrant.client.grpc.Points.PointStruct
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
 import me.anasmusa.portfolio.ai.AI
+import me.anasmusa.portfolio.core.AppJson
 import java.io.File
 import java.nio.ByteBuffer
 import java.security.MessageDigest
@@ -44,7 +44,7 @@ object QdrantDatabase {
             val file = File(folder, "context_cache.json")
             if (file.exists()){
                 insert(
-                    Json.decodeFromString(file.readText())
+                    AppJson.decodeFromString(file.readText())
                 )
             }
         }
@@ -60,7 +60,7 @@ object QdrantDatabase {
         val folder = File("data")
         folder.mkdirs()
         val file = File(folder, "context_cache.json")
-        file.writeText(Json.encodeToString(json))
+        file.writeText(AppJson.encodeToString(json))
         return insert(json)
     }
 

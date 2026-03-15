@@ -368,7 +368,7 @@ fun BoxWithConstraintsScope.AppScene(
     onChatStateChanged: (expanded: Boolean) -> Unit
 ) {
     val viewModel = viewModel { MainViewModel() }
-    val state by viewModel.state
+    val state by viewModel.state.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
     Column(
@@ -436,15 +436,15 @@ fun BoxWithConstraintsScope.AppScene(
                     viewModel.handle(MainIntent.LoadExperience)
                 }
             }
-//            item(3) {
-//                EducationSection(
-//                    modifier = Modifier.padding(horizontal = padding),
-//                    data = state.education,
-//                )
-//                LaunchedEffect(Unit) {
-//                    viewModel.handle(MainIntent.LoadEducation)
-//                }
-//            }
+            item(3) {
+                EducationSection(
+                    modifier = Modifier.padding(horizontal = padding),
+                    data = state.education,
+                )
+                LaunchedEffect(Unit) {
+                    viewModel.handle(MainIntent.LoadEducation)
+                }
+            }
 //            item(4) {
 //                LanguageSection(
 //                    modifier = Modifier.padding(horizontal = padding),

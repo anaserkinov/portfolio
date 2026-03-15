@@ -1,15 +1,9 @@
 package me.anasmusa.portfolio.db
 
-import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.decodeFromJsonElement
-import me.anasmusa.portfolio.api.model.AboutResponse
-import me.anasmusa.portfolio.api.model.EducationResponse
-import me.anasmusa.portfolio.api.model.ExperienceResponse
-import me.anasmusa.portfolio.api.model.LanguageResponse
-import me.anasmusa.portfolio.api.model.ProjectResponse
-import me.anasmusa.portfolio.api.model.SectionType
-import me.anasmusa.portfolio.api.model.SkillResponse
+import me.anasmusa.portfolio.api.model.*
+import me.anasmusa.portfolio.core.AppJson
 import java.io.File
 
 object JsonDatabase {
@@ -21,28 +15,28 @@ object JsonDatabase {
             json.forEach { (key, element) ->
                 when(key) {
                     SectionType.About.value -> {
-                        Json.decodeFromJsonElement<AboutResponse>(element)
+                        AppJson.decodeFromJsonElement<AboutResponse>(element)
                     }
                     SectionType.Experience.value -> {
-                        Json.decodeFromJsonElement<ExperienceResponse>(element)
+                        AppJson.decodeFromJsonElement<ExperienceResponse>(element)
                     }
                     SectionType.Education.value -> {
-                        Json.decodeFromJsonElement<EducationResponse>(element)
+                        AppJson.decodeFromJsonElement<EducationResponse>(element)
                     }
                     SectionType.Language.value -> {
-                        Json.decodeFromJsonElement<LanguageResponse>(element)
+                        AppJson.decodeFromJsonElement<LanguageResponse>(element)
                     }
                     SectionType.Skills.value -> {
-                        Json.decodeFromJsonElement<SkillResponse>(element)
+                        AppJson.decodeFromJsonElement<SkillResponse>(element)
                     }
                     SectionType.Projects.value -> {
-                        Json.decodeFromJsonElement<ProjectResponse>(element)
+                        AppJson.decodeFromJsonElement<ProjectResponse>(element)
                     }
                     else -> return false
                 }
 
                 val file = File(folder, "$key.json")
-                file.writeText(Json.encodeToString(element))
+                file.writeText(AppJson.encodeToString(element))
             }
             true
         } catch (e: Exception){
@@ -57,7 +51,7 @@ object JsonDatabase {
             folder.mkdirs()
             val file = File(folder, "$type.json")
             if (file.exists()) {
-                return Json.decodeFromString<T>(file.readText())
+                return AppJson.decodeFromString<T>(file.readText())
             }
             null
         } catch (_: Exception){

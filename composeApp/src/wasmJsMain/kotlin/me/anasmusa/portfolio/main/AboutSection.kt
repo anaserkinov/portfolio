@@ -66,7 +66,7 @@ fun AboutSection(
 
             Text(
                 modifier = Modifier
-                    .padding(top = deviceValue(15, 10).dp),
+                    .padding(top = deviceValue(8, 10).dp),
                 text = data.about,
                 color = MaterialTheme.colorScheme.secondary,
                 fontSize = deviceValue(10, 24).sp,
@@ -75,7 +75,7 @@ fun AboutSection(
 
             FlowRow(
                 modifier = Modifier.fillMaxWidth()
-                    .padding(top = 24.dp),
+                    .padding(top = deviceValue(12, 24).dp),
                 horizontalArrangement = Arrangement.spacedBy(deviceValue(12, 28).dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {

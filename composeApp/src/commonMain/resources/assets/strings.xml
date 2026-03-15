@@ -36,28 +36,6 @@
     <string name="c2">Proficiency (C2)</string>
     <string name="native">Native</string>
 
-    <string name="job_position_unical">Android Software Engineer</string>
-    <string name="job_description_unical_0">Improved code quality and stability with increasing test coverage from 40% to 75% with unit and integration tests.</string>
-    <string name="job_description_unical_1">Integrated CI/CD pipelines using GitHub Actions/GitLab CI to automate testing and deployment processes, reducing the release cycle time and enhancing deployment reliability</string>
-    <string name="job_description_unical_2">Utilized code-driven approaches for UI creation to optimize performance and enable dynamic content handling</string>
-    <string name="job_description_unical_3">Developed a Fragment-like component for screen management, incorporating swipe-to-close functionality and automatic landscape mode handling</string>
-    <string name="job_description_unical_4">Implemented offline mode, allowing users to perform various tasks without internet connectivity. Utilized SQLite for local data storage and ensured seamless synchronization with the server upon reconnection.</string>
-    <string name="job_description_unical_5">Implemented a robust logging system to track app behavior, monitor performance, and debug issues effectively, resulting in increased app stability and a 30% decrease in crash rates.</string>
-    <string name="job_description_unical_6">Implemented fare calculation in offline mode within a taxi driver application by utilizing location tracking and database caching functionalities.</string>
-    <string name="job_description_unical_7">Developed an Android library optimized for interfacing with POS printers, capable of establishing connections via Bluetooth, USB, or Ethernet for seamless printing operations.</string>
-    <string name="job_description_unical_8">Added a feature to an iOS application enabling printing of images in POS printers, expanding the app’s functionality and usability.</string>
-    <string name="job_description_unical_9">Developed and collaborated on a Flutter-based desktop application, leading the creation of data and domain modules, database setup, and networking components within a cross-functional team environment.</string>
-
-    <string name="job_position_upwork">Freelance Android Software Engineer</string>
-    <string name="job_description_upwork_0">Collaborated directly with clients as a freelancer, understanding their requirements and delivering customized solutions to meet their needs.</string>
-    <string name="job_description_upwork_1">Enhanced app UI to align with Material Design guidelines, incorporating intuitive animations for a more engaging user experience.</string>
-    <string name="job_description_upwork_2">Transitioned legacy codebase to the MVVM architecture pattern, while adhering to clean architecture principles by modularizing code for improved maintainability and scalability.</string>
-    <string name="job_description_upwork_3">Implemented advanced features such as read receipts, message info screen, and auto-delete functionality, similar to WhatsApp, within a chat application built on Firebase infrastructure, enhancing user engagement.</string>
-
-    <string name="education_tuit_title">Tashkent University of Information Technologies</string>
-    <string name="education_tuit_field">Software engineering</string>
-    <string name="education_description_tuit_0">Algorithms and Data Structures, Operating Systems, development methodologies, Database management systems, development tools, and collaborative team projects</string>
-
     <string name="proficient">Proficient</string>
     <string name="competent">Competent</string>
     <string name="familiar">Familiar</string>

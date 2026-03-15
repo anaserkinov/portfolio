@@ -11,9 +11,9 @@ import com.github.kotlintelegrambot.entities.ParseMode
 import com.github.kotlintelegrambot.extensions.filters.Filter
 import com.github.kotlintelegrambot.webhook
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.decodeFromStream
+import me.anasmusa.portfolio.core.AppJson
 import me.anasmusa.portfolio.core.Config
 import me.anasmusa.portfolio.db.JsonDatabase
 import me.anasmusa.portfolio.db.QdrantDatabase
@@ -124,7 +124,7 @@ object Bot {
                         return@document
                     }
 
-                    val json = Json.decodeFromStream<JsonObject>(remoteFile.byteStream())
+                    val json = AppJson.decodeFromStream<JsonObject>(remoteFile.byteStream())
                     val result = if (fileName == "content") {
                         JsonDatabase.save(json)
                     } else {

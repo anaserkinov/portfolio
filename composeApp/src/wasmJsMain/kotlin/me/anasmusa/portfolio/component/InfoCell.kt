@@ -41,13 +41,13 @@ fun InfoCell(
             titleSize = 22.sp
             descriptionSize = 17.sp
             top = 4.dp
-            bottom = 4.dp
+            bottom = 8.dp
         } else {
             dateSize = 11.sp
             titleSize = 13.sp
             descriptionSize = 11.sp
-            top = 2.dp
-            bottom = 12.dp
+            top = 0.dp
+            bottom = 4.dp
         }
 
         Text(
@@ -100,10 +100,10 @@ fun ShimmerInfoCell(count: Int) {
     val bottom: Dp
 
     if (isTablet()){
-        top = 4.dp
+        top = 12.dp
         bottom = 4.dp
     } else {
-        top = 2.dp
+        top = 8.dp
         bottom = 12.dp
     }
 
@@ -114,8 +114,8 @@ fun ShimmerInfoCell(count: Int) {
         ShimmerBox(
             modifier = Modifier
                 .padding(start = 20.dp)
-                .fillMaxWidth(0.15f)
-                .height(deviceValue(16, 32).dp)
+                .fillMaxWidth(0.2f)
+                .height(deviceValue(12, 20).dp)
         )
         ShimmerBox(
             modifier = Modifier
@@ -124,13 +124,13 @@ fun ShimmerInfoCell(count: Int) {
                     top = top,
                     bottom = bottom
                 )
-                .fillMaxWidth(0.3f)
-                .height(deviceValue(36, 56).dp)
+                .fillMaxWidth(0.4f)
+                .height(deviceValue(20, 28).dp)
         )
         repeat(count) {
             ShimmerBox(
                 modifier = Modifier
-                    .padding(top = 8.dp)
+                    .padding(top = 12.dp)
                     .drawBehind {
                         drawLine(
                             color = onBackground,
@@ -140,8 +140,8 @@ fun ShimmerInfoCell(count: Int) {
                         )
                     }
                     .padding(start = 32.dp)
-                    .fillMaxWidth(0.3f)
-                    .height(deviceValue(30, 50).dp)
+                    .fillMaxWidth(0.7f)
+                    .height(deviceValue(24, 32).dp)
             )
         }
     }

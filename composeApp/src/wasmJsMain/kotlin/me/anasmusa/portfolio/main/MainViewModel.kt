@@ -1,10 +1,10 @@
 package me.anasmusa.portfolio.main
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import me.anasmusa.portfolio.api.model.AboutResponse
 import me.anasmusa.portfolio.api.model.LanguageResponse
@@ -37,8 +37,8 @@ class MainViewModel: ViewModel(){
 
     private val apiClient = ApiClient()
 
-    private val _state = mutableStateOf(MainState())
-    val state: State<MainState>
+    private val _state = MutableStateFlow(MainState())
+    val state: StateFlow<MainState>
         get() = _state
 
 
@@ -57,9 +57,9 @@ class MainViewModel: ViewModel(){
        if (state.value.about != null) return
        viewModelScope.launch {
            try {
-               _state.value = state.value.copy(
-                   about = apiClient.getAbout().data
-               )
+               _state.update {
+                   it.copy(about = apiClient.getAbout().data)
+               }
            } catch (_: Exception){}
        }
    }
@@ -68,21 +68,23 @@ class MainViewModel: ViewModel(){
         if (state.value.experience != null) return
         viewModelScope.launch {
             try {
-                _state.value = state.value.copy(
-                    experience = apiClient.getExperience().data.let { response ->
-                        Experience(
-                            response.entities.map {
-                                Experience.Entity(
-                                    it.company,
-                                    it.link,
-                                    it.date,
-                                    it.position,
-                                    it.items.map { it.value }
-                                )
-                            }
-                        )
-                    }
-                )
+                _state.update {
+                    it.copy(
+                        experience = apiClient.getExperience().data.let { response ->
+                            Experience(
+                                response.entities.map {
+                                    Experience.Entity(
+                                        it.company,
+                                        it.link,
+                                        it.date,
+                                        it.position,
+                                        it.items.map { it.value }
+                                    )
+                                }
+                            )
+                        }
+                    )
+                }
             } catch (_: Exception){}
         }
     }
@@ -91,22 +93,23 @@ class MainViewModel: ViewModel(){
         if (state.value.education != null) return
         viewModelScope.launch {
             try {
-                _state.value = state.value.copy(
-                    education = apiClient.getEducation().data.let { response ->
-                        Education(
-                            response.entities.map {
-                                Education.Entity(
-                                    university = it.university,
-                                    field = it.field,
-                                    completed = it.completed,
-                                    date = it.date,
-                                    position = it.position,
-                                    items = it.items.map { it.value }
-                                )
-                            }
-                        )
-                    }
-                )
+                _state.update {
+                    it.copy(
+                        education = apiClient.getEducation().data.let { response ->
+                            Education(
+                                response.entities.map {
+                                    Education.Entity(
+                                        university = it.university,
+                                        field = it.field,
+                                        completed = it.completed,
+                                        date = it.date,
+                                        items = it.items.map { it.value }
+                                    )
+                                }
+                            )
+                        }
+                    )
+                }
             } catch (_: Exception){}
         }
     }
@@ -115,9 +118,11 @@ class MainViewModel: ViewModel(){
         if (state.value.language != null) return
         viewModelScope.launch {
             try {
-                _state.value = state.value.copy(
-                    language = apiClient.getLanguage().data
-                )
+                _state.update {
+                    it.copy(
+                        language = apiClient.getLanguage().data
+                    )
+                }
             } catch (_: Exception){}
         }
     }
@@ -126,7 +131,9 @@ class MainViewModel: ViewModel(){
         if (state.value.skills != null) return
         viewModelScope.launch {
             try {
-                _state.value = state.value.copy(skills = apiClient.getSkills().data)
+                _state.update {
+                    it.copy(skills = apiClient.getSkills().data)
+                }
             } catch (_: Exception){}
         }
     }
@@ -134,14 +141,18 @@ class MainViewModel: ViewModel(){
     private fun loadProjects(isPrimary: Boolean?) {
         if (state.value.projects != null) return
         if (isPrimary == null) {
-            _state.value = state.value.copy(isAllProjectsLoading = true)
+            _state.update {
+                it.copy(isAllProjectsLoading = true)
+            }
         }
         viewModelScope.launch {
             try {
-                _state.value = state.value.copy(
-                    projects = apiClient.getProjects(isPrimary = isPrimary).data,
-                    isAllProjectsLoading = false
-                )
+                _state.update {
+                    it.copy(
+                        projects = apiClient.getProjects(isPrimary = isPrimary).data,
+                        isAllProjectsLoading = false
+                    )
+                }
             } catch (_: Exception){}
         }
     }

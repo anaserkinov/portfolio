@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import me.anasmusa.portfolio.Strings
 import me.anasmusa.portfolio.component.InfoCell
+import me.anasmusa.portfolio.component.ShimmerInfoCell
 import me.anasmusa.portfolio.component.Title
 import me.anasmusa.portfolio.data.model.Education
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -25,12 +26,12 @@ fun EducationSection(
             .fillMaxWidth()
             .padding(bottom = 60.dp)
     ) {
-        data?.let { data ->
-            Title(
-                Res.drawable.ic_edu,
-                Strings.education
-            )
+        Title(
+            Res.drawable.ic_edu,
+            Strings.education
+        )
 
+        data?.let { data ->
             data.entities.forEach {
                 InfoCell(
                     it.date,
@@ -39,7 +40,9 @@ fun EducationSection(
                 )
             }
         } ?: run {
-
+            repeat(1) {
+                ShimmerInfoCell(1)
+            }
         }
     }
 }
