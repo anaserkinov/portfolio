@@ -2,17 +2,20 @@ package me.anasmusa.portfolio.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import me.anasmusa.portfolio.api.model.AboutResponse
 import me.anasmusa.portfolio.api.model.LanguageResponse
-import me.anasmusa.portfolio.api.model.ProjectResponse
+import me.anasmusa.portfolio.api.model.Platform
 import me.anasmusa.portfolio.api.model.SkillResponse
 import me.anasmusa.portfolio.data.model.Education
 import me.anasmusa.portfolio.data.model.Experience
+import me.anasmusa.portfolio.data.model.Project
+import me.anasmusa.portfolio.data.model.Project.PlatformInfo
+import me.anasmusa.portfolio.data.model.toUI
 import me.anasmusa.portfolio.data.network.ApiClient
 
 data class MainState(
@@ -21,7 +24,10 @@ data class MainState(
     val education: Education? = null,
     val language: LanguageResponse? = null,
     val skills: SkillResponse? = null,
-    val projects: ProjectResponse? = null,
+    val projects: List<Project>? = null,
+    val totalProjectsCount: Int = 0,
+    val platforms: List<PlatformInfo> = emptyList(),
+    val selectedPlatform: Platform? = null,
     val isAllProjectsLoading: Boolean = false
 )
 
@@ -32,6 +38,7 @@ sealed interface MainIntent {
     data object LoadLanguage: MainIntent
     data object LoadSkill: MainIntent
     data class LoadProjects(val loadAll: Boolean): MainIntent
+    data class SelectPlatform(val platform: Platform?): MainIntent
 }
 
 class MainViewModel: ViewModel(){
@@ -42,6 +49,8 @@ class MainViewModel: ViewModel(){
     val state: StateFlow<MainState>
         get() = _state
 
+    private var cachedProjects: List<Project>? = null
+    private var projectLoadJob: Job? = null
 
     fun handle(intent: MainIntent){
         when(intent){
@@ -51,6 +60,7 @@ class MainViewModel: ViewModel(){
             MainIntent.LoadLanguage -> loadLanguage()
             MainIntent.LoadSkill -> loadSkills()
             is MainIntent.LoadProjects -> loadProjects(isPrimary = if (intent.loadAll) null else true)
+            is MainIntent.SelectPlatform -> filterProjects(intent.platform)
         }
     }
 
@@ -140,21 +150,75 @@ class MainViewModel: ViewModel(){
     }
 
     private fun loadProjects(isPrimary: Boolean?) {
-        if (state.value.projects != null && isPrimary != null) return
-        if (isPrimary == null) {
-            _state.update {
-                it.copy(isAllProjectsLoading = true)
+        if (cachedProjects != null && isPrimary != null) return
+        viewModelScope.launch {
+            projectLoadJob?.join()
+
+            if (cachedProjects != null && cachedProjects!!.size == state.value.totalProjectsCount) return@launch
+            projectLoadJob = launch {
+                if (isPrimary == null) {
+                    _state.update {
+                        it.copy(isAllProjectsLoading = true)
+                    }
+                }
+
+                try {
+                    val response = apiClient.getProjects(isPrimary = isPrimary).data
+                    if (cachedProjects == null){
+                        _state.update {
+                            it.copy(
+                                totalProjectsCount = response.totalCount,
+                                platforms = response.platforms.map { it.toUI() }
+                            )
+                        }
+                    }
+                    cachedProjects = response.toUI()
+                    submitProjects(state.value.selectedPlatform)
+                } catch (_: Exception){
+                    _state.update { it.copy(isAllProjectsLoading = false) }
+                }
             }
         }
+    }
+
+    private fun filterProjects(platform: Platform?) {
+        _state.update {
+            it.copy(
+                projects = null,
+                selectedPlatform = platform,
+                isAllProjectsLoading = false
+            )
+        }
         viewModelScope.launch {
-            try {
-                _state.update {
-                    it.copy(
-                        projects = apiClient.getProjects(isPrimary = isPrimary).data,
-                        isAllProjectsLoading = false
-                    )
-                }
-            } catch (_: Exception){}
+            projectLoadJob?.join()
+            _state.update {
+                it.copy(
+                    projects = null,
+                    isAllProjectsLoading = false
+                )
+            }
+            if (cachedProjects != null && cachedProjects!!.size != state.value.totalProjectsCount) {
+                val response = apiClient.getProjects(isPrimary = null).data
+                cachedProjects = response.toUI()
+            }
+            submitProjects(platform)
+        }
+    }
+
+    private fun submitProjects(platform: Platform?) {
+        cachedProjects?.let { cachedProjects ->
+            _state.update {
+                it.copy(
+                    projects = if (platform == null)
+                        cachedProjects
+                    else
+                        cachedProjects.filter {
+                            it.platforms.contains(platform)
+                        }
+                    ,
+                    isAllProjectsLoading = false
+                )
+            }
         }
     }
 

@@ -7,7 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.valentinilk.shimmer.shimmer
-import me.anasmusa.portfolio.Strings
 import me.anasmusa.portfolio.component.InfoCell
 import me.anasmusa.portfolio.component.ShimmerInfoCell
 import me.anasmusa.portfolio.component.Title
@@ -15,6 +14,7 @@ import me.anasmusa.portfolio.core.deviceValue
 import me.anasmusa.portfolio.data.model.Experience
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import portfolio.composeapp.generated.resources.Res
+import portfolio.composeapp.generated.resources.experience
 import portfolio.composeapp.generated.resources.ic_case
 
 @OptIn(ExperimentalResourceApi::class)
@@ -32,7 +32,7 @@ fun ExperienceSection(
     ) {
         Title(
             icon = Res.drawable.ic_case,
-            title = Strings.experience
+            title = Res.string.experience
         )
 
         data?.let { data ->

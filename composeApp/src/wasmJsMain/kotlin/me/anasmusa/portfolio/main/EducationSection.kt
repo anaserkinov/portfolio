@@ -7,13 +7,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.valentinilk.shimmer.shimmer
-import me.anasmusa.portfolio.Strings
 import me.anasmusa.portfolio.component.InfoCell
 import me.anasmusa.portfolio.component.ShimmerInfoCell
 import me.anasmusa.portfolio.component.Title
 import me.anasmusa.portfolio.data.model.Education
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import portfolio.composeapp.generated.resources.Res
+import portfolio.composeapp.generated.resources.education
 import portfolio.composeapp.generated.resources.ic_edu
 
 @OptIn(ExperimentalResourceApi::class)
@@ -29,7 +29,7 @@ fun EducationSection(
     ) {
         Title(
             icon = Res.drawable.ic_edu,
-            title = Strings.education
+            title = Res.string.education
         )
 
         data?.let { data ->

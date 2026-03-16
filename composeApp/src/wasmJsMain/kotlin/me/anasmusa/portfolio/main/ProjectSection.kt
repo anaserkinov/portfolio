@@ -3,6 +3,8 @@ package me.anasmusa.portfolio.main
 import androidx.compose.foundation.BasicTooltipBox
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
@@ -12,11 +14,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -24,41 +31,89 @@ import coil3.compose.AsyncImage
 import com.valentinilk.shimmer.Shimmer
 import com.valentinilk.shimmer.shimmer
 import kotlinx.browser.window
-import me.anasmusa.portfolio.Strings
-import me.anasmusa.portfolio.api.model.ProjectResponse
-import me.anasmusa.portfolio.api.model.System
-import me.anasmusa.portfolio.component.Chip
-import me.anasmusa.portfolio.component.ShimmerBox
-import me.anasmusa.portfolio.component.TextWithHeight
-import me.anasmusa.portfolio.component.Title
+import me.anasmusa.portfolio.api.model.Platform
+import me.anasmusa.portfolio.component.*
 import me.anasmusa.portfolio.core.*
-import org.jetbrains.compose.resources.painterResource
-import portfolio.composeapp.generated.resources.*
+import me.anasmusa.portfolio.data.model.Project
+import me.anasmusa.portfolio.data.model.Project.PlatformInfo
+import org.jetbrains.compose.resources.stringResource
+import portfolio.composeapp.generated.resources.Res
+import portfolio.composeapp.generated.resources.ic_chevron_down
+import portfolio.composeapp.generated.resources.ic_code
+import portfolio.composeapp.generated.resources.projects
+import portfolio.composeapp.generated.resources.white_label_tip
+import portfolio.composeapp.generated.resources.all
 
 fun LazyListScope.projectSection(
     modifier: Modifier,
     shimmer: Shimmer,
-    data: ProjectResponse?,
+    projects: List<Project>?,
+    totalProjectsCount: Int,
+    platforms: List<PlatformInfo>,
+    selectedPlatform: Platform?,
     isAllLoading: Boolean,
-    loadProjects: (isAll: Boolean) -> Unit
+    loadProjects: (isAll: Boolean) -> Unit,
+    selectPlatform: (platform: Platform?) -> Unit,
 ) {
 
     item {
         Title(
             modifier = modifier,
             icon = Res.drawable.ic_code,
-            title = Strings.projects
+            title = Res.string.projects
         )
 
-        Spacer(Modifier.height(deviceValue(6, 12).dp))
+        FlowRow(
+            modifier = modifier.fillMaxWidth()
+                .let {
+                    if (platforms.isEmpty()) it.shimmer(shimmer)
+                    else it
+                },
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            val height = deviceValue(18, 36).dp
+            if (platforms.isNotEmpty()){
+                val size = deviceValue(8, 16).sp
+                FilterChip(
+                    selected = selectedPlatform == null,
+                    size = size,
+                    text = stringResource(Res.string.all) + "(${totalProjectsCount})",
+                    onClick = {
+                        selectPlatform(null)
+                    }
+                )
+                platforms.forEach {
+                    FilterChip(
+                        selected = selectedPlatform == it.platform,
+                        size = size,
+                        text = it.platform.name + "(${it.count})",
+                        onClick = {
+                            selectPlatform(it.platform)
+                        }
+                    )
+                }
+            } else {
+                val width = deviceValue(70, 140).dp
+                repeat(5) {
+                    ShimmerBox(
+                        modifier = Modifier
+                            .height(height)
+                            .width(width),
+                        shape = RoundedCornerShape(height/2)
+                    )
+                }
+            }
+        }
+
+        Spacer(Modifier.height(deviceValue(20, 28).dp))
 
         LaunchedEffect(Unit){
             loadProjects(false)
         }
     }
 
-    data?.let { data ->
-        items(data.entities, contentType = { 1000 }) {
+    projects?.let { projects ->
+        items(projects, contentType = { 1000 }) {
             Cell(
                 modifier = modifier,
                 project = it
@@ -72,13 +127,13 @@ fun LazyListScope.projectSection(
                         .shimmer(shimmer),
                 )
             }
-        } else if (data.entities.size < data.totalCount) {
+        } else if (projects.size < totalProjectsCount && selectedPlatform == null) {
             item {
                 Box(
                     modifier = Modifier.fillMaxWidth(),
                     contentAlignment = Alignment.Center
                 ){
-                    val height = deviceValue(18, 36).dp
+                    val height = deviceValue(24, 36).dp
                     val size = deviceValue(8, 16).sp
                     Chip(
                         modifier = Modifier
@@ -109,7 +164,7 @@ fun LazyListScope.projectSection(
 @Composable
 private fun Cell(
     modifier: Modifier = Modifier,
-    project: ProjectResponse.Entity
+    project: Project
 ) {
     Column(
         modifier = modifier.fillMaxWidth()
@@ -120,11 +175,11 @@ private fun Cell(
 
         if (isTablet()) {
             titleSize = 22.sp
-            descriptionSize = 14.sp
+            descriptionSize = 16.sp
             itemSize = 17.sp
         } else {
             titleSize = 13.sp
-            descriptionSize = 9.sp
+            descriptionSize = 10.sp
             itemSize = 11.sp
         }
 
@@ -154,53 +209,6 @@ private fun Cell(
                 positioning = TooltipAnchorPosition.Above
             )
 
-            project.systems.forEach { system ->
-                val (icon, name, isTintable) = when (system) {
-                    System.Android -> {
-                        Triple(Res.drawable.ic_android, Strings.android, false)
-                    }
-                    System.ComposeMultiplatform -> {
-                        Triple(Res.drawable.ic_compose_multiplatform, Strings.compose_multiplatform, false)
-                    }
-                    System.KtorServer -> {
-                        Triple(Res.drawable.ic_ktor, Strings.ktor_server, false)
-                    }
-                    System.ReactJs -> {
-                        Triple(Res.drawable.ic_react_js, Strings.react_js, false)
-                    }
-                }
-
-                BasicTooltipBox(
-                    positionProvider = tooltipPositionProvider,
-                    state = rememberBasicTooltipState(),
-                    content = {
-                        Icon(
-                            modifier = Modifier
-                                .padding(start = 6.dp)
-                                .size(20.dp),
-                            painter = painterResource(icon),
-                            tint = if (isTintable)
-                                MaterialTheme.colorScheme.onBackground
-                            else
-                                Color.Unspecified,
-                            contentDescription = null
-                        )
-                    },
-                    tooltip = {
-                        TextWithHeight(
-                            modifier = Modifier
-                                .padding(bottom = 8.dp)
-                                .widthIn(max = 300.dp)
-                                .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(8.dp))
-                                .padding(8.dp),
-                            text = stringResource(name),
-                            color = MaterialTheme.colorScheme.onSurface,
-                            fontSize = descriptionSize
-                        )
-                    }
-                )
-            }
-
             if (project.isWhiteLabel) {
                 BasicTooltipBox(
                     positionProvider = tooltipPositionProvider,
@@ -208,10 +216,10 @@ private fun Cell(
                     content = {
                         TextWithHeight(
                             modifier = Modifier
-                                .padding(start = 16.dp)
+                                .padding(start = 8.dp)
                                 .clip(RoundedCornerShape(50))
                                 .background(MaterialTheme.colorScheme.surface)
-                                .padding(6.dp),
+                                .padding(vertical = 6.dp, horizontal = 12.dp),
                             text = "White-Label",
                             color = MaterialTheme.colorScheme.onBackground,
                             fontSize = descriptionSize
@@ -223,7 +231,7 @@ private fun Cell(
                                 .widthIn(max = 300.dp)
                                 .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(8.dp))
                                 .padding(8.dp),
-                            text = stringResource(Strings.white_label_tip),
+                            text = stringResource(Res.string.white_label_tip),
                             color = MaterialTheme.colorScheme.onSurface,
                             fontSize = descriptionSize
                         )
@@ -253,8 +261,36 @@ private fun Cell(
         ) {
             project.description.items.forEach { item ->
                 Spacer(modifier = Modifier.padding(top = 4.dp, bottom = 4.dp))
-                ProjectInfo(item.value, itemSize)
+                ProjectInfo(item, itemSize)
             }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        if (project.techStack != null){
+            var expanded by remember { mutableStateOf(false) }
+            var isOverflowing by remember { mutableStateOf(false) }
+
+            Text(
+                text = project.techStack,
+                color = MaterialTheme.colorScheme.onBackground,
+                maxLines = if (expanded) Int.MAX_VALUE else 1,
+                overflow = TextOverflow.Ellipsis,
+                fontStyle = FontStyle.Italic,
+                onTextLayout = { result ->
+                    if (!expanded) {
+                        isOverflowing = result.hasVisualOverflow
+                    }
+                },
+                modifier = Modifier.clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null
+                ) {
+                    if (isOverflowing || expanded) {
+                        expanded = !expanded
+                    }
+                }
+            )
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -264,8 +300,8 @@ private fun Cell(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            val height = deviceValue(18, 36).dp
-            val size = deviceValue(8, 16).sp
+            val height = deviceValue(24, 36).dp
+            val size = deviceValue(12, 16).sp
             project.links.forEach {
                 val (text, icon) = it.textAndIcon()
                 Chip(

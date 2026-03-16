@@ -4,14 +4,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.ClipEntry
-import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -19,27 +15,21 @@ import coil3.compose.AsyncImage
 import com.valentinilk.shimmer.shimmer
 import kotlinx.browser.document
 import kotlinx.browser.window
-import kotlinx.coroutines.launch
-import me.anasmusa.portfolio.Strings
 import me.anasmusa.portfolio.api.model.AboutResponse
 import me.anasmusa.portfolio.api.model.LinkType
 import me.anasmusa.portfolio.component.Chip
 import me.anasmusa.portfolio.component.ShimmerBox
-import me.anasmusa.portfolio.core.*
+import me.anasmusa.portfolio.core.deviceValue
+import me.anasmusa.portfolio.core.textAndIcon
+import me.anasmusa.portfolio.core.withDownloadBaseUrl
 import org.w3c.dom.HTMLAnchorElement
-import portfolio.composeapp.generated.resources.Res
-import portfolio.composeapp.generated.resources.ic_mail
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun AboutSection(
     modifier: Modifier,
-    data: AboutResponse?,
-    snackbarHostState: SnackbarHostState
+    data: AboutResponse?
 ) {
-    val coroutineScope = rememberCoroutineScope()
-    val clipboardManager = LocalClipboard.current
-
     val modifier = modifier.fillMaxWidth()
         .padding(
             top = deviceValue(80, 200).dp,
@@ -82,65 +72,31 @@ fun AboutSection(
                 val height = deviceValue(22, 44).dp
                 val size = deviceValue(8, 19).sp
                 data.contact.forEach {
-                    when(it.type) {
-
-                        LinkType.LinkedIn,
-                        LinkType.Github,
-                        LinkType.Telegram,
-                        LinkType.CV -> {
-                            val (text, icon) = it.textAndIcon()
-                            Chip(
-                                height = height,
-                                size = size,
-                                text = text,
-                                icon = icon,
-                                onClick = {
-                                    if (it.type == LinkType.CV) {
-                                        val link = document.createElement("a") as HTMLAnchorElement
-                                        val url = it.value.withDownloadBaseUrl()
-                                        link.href = url
-                                        link.download = url
-                                        link.click()
-                                    } else {
-                                        window.open(it.value, "_blank")
-                                    }
+                    val (text, icon) = it.textAndIcon()
+                    Chip(
+                        height = height,
+                        size = size,
+                        text = if (it.type == LinkType.Mail) it.value
+                        else text,
+                        icon = icon,
+                        onClick = {
+                            when (it.type) {
+                                LinkType.Mail -> {
+                                    window.open("mailto:${it.value}?body=Hi%20${data.firstName},", "_parent")
                                 }
-                            )
+                                LinkType.CV -> {
+                                    val link = document.createElement("a") as HTMLAnchorElement
+                                    val url = it.value.withDownloadBaseUrl()
+                                    link.href = url
+                                    link.download = url
+                                    link.click()
+                                }
+                                else -> {
+                                    window.open(it.value, "_blank")
+                                }
+                            }
                         }
-
-                        LinkType.Mail -> {
-                            if (Platform.isMobile)
-                                Chip(
-                                    height = height,
-                                    size = size,
-                                    text = it.value,
-                                    icon = Res.drawable.ic_mail,
-                                    onClick = {
-                                        window.open("mailto:${it.value}?body=Hi%20${data.firstName},", "_parent")
-                                    },
-                                    onLongClick = {
-                                        coroutineScope.launch {
-                                            clipboardManager.setClipEntry(
-                                                ClipEntry.withPlainText(it.value)
-                                            )
-                                            snackbarHostState.showSnackbar(stringResource(Strings.copy_message))
-                                        }
-                                    }
-                                )
-                            else
-                                Chip(
-                                    height = height,
-                                    size = size,
-                                    text = it.value,
-                                    icon = Res.drawable.ic_mail,
-                                    selectable = true,
-                                    onClick = {
-                                        window.open("mailto:${it.value}?body=Hi%20${data.firstName},", "_parent")
-                                    }
-                                )
-                        }
-                        else -> {}
-                    }
+                    )
                 }
             }
         }

@@ -7,13 +7,15 @@ import kotlinx.serialization.Serializable
 data class ProjectResponse(
     val entities: List<Entity>,
     val totalCount: Int = entities.size,
+    val platforms: List<PlatformInfo> = emptyList()
 ){
 
     @Serializable
     data class Entity(
         @SerialName("logo_path") val logoPath: String,
         val title: String,
-        val systems: List<System>,
+        val platforms: List<Platform>,
+        @SerialName("tech_stack") val techStack: List<String>,
         val date: String,
         val description: Description,
         @SerialName("is_white_label") val isWhiteLabel: Boolean,
@@ -31,5 +33,11 @@ data class ProjectResponse(
             val value: String
         )
     }
+
+    @Serializable
+    data class PlatformInfo(
+        val platform: Platform,
+        val count: Int
+    )
 
 }

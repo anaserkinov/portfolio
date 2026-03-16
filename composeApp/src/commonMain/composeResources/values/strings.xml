@@ -6,11 +6,12 @@
     <string name="languages">Languages</string>
     <string name="skills">Skills</string>
     <string name="projects">Projects</string>
-    <string name="figma_credit">• Based on a design by %s from the Figma Community. Design customized during website implementation.</string>
-    <string name="rive_credit">• Chatbot animation originally created by GowthamSelvaraj on the Rive Community; adapted and customized during website implementation.</string>
+    <string name="figma_credit">• Based on a design by %1$s from the Figma Community. Design customized during website implementation.</string>
+    <string name="rive_credit">• Chatbot animation originally created by %1$s on the Rive Community; adapted and customized during website implementation.</string>
     <string name="head_up">Heads Up!</string>
     <string name="website_warning">This site is powered by some cutting-edge tech, so it might act a little weird on some devices.</string>
     <string name="got_it">Got it</string>
+    <string name="all">All</string>
 
     <string name="website">Website</string>
     <string name="present">Present</string>

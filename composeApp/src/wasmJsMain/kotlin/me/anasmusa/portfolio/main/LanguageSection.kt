@@ -1,12 +1,7 @@
 package me.anasmusa.portfolio.main
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,15 +14,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.valentinilk.shimmer.shimmer
-import me.anasmusa.portfolio.Strings
 import me.anasmusa.portfolio.api.model.LanguageResponse
 import me.anasmusa.portfolio.component.ShimmerBox
 import me.anasmusa.portfolio.component.Title
 import me.anasmusa.portfolio.core.deviceValue
-import me.anasmusa.portfolio.core.stringResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import portfolio.composeapp.generated.resources.Res
-import portfolio.composeapp.generated.resources.ic_lang
+import org.jetbrains.compose.resources.stringResource
+import portfolio.composeapp.generated.resources.*
 
 
 @OptIn(ExperimentalResourceApi::class)
@@ -44,7 +37,7 @@ fun LanguageSection(
     ) {
         Title(
             icon = Res.drawable.ic_lang,
-            title = Strings.languages
+            title = Res.string.languages
         )
         data?.let { data ->
             data.entities.forEach { language ->
@@ -95,13 +88,13 @@ private fun LanguageCell(
                 append(
                     stringResource(
                         when(level){
-                            "a1" -> Strings.a1
-                            "a2" -> Strings.a2
-                            "b1" -> Strings.b1
-                            "b2" -> Strings.b2
-                            "c1" -> Strings.c1
-                            "c2" -> Strings.c2
-                            else -> Strings.native
+                            "a1" -> Res.string.a1
+                            "a2" -> Res.string.a2
+                            "b1" -> Res.string.b1
+                            "b2" -> Res.string.b2
+                            "c1" -> Res.string.c1
+                            "c2" -> Res.string.c2
+                            else -> Res.string.native
                         }
                     )
                 )

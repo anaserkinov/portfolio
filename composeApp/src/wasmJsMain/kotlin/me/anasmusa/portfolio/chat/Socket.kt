@@ -6,8 +6,12 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.encodeToJsonElement
+import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.long
 import me.anasmusa.portfolio.api.model.webscoket.WebSocketRequest
 import me.anasmusa.portfolio.api.model.webscoket.WebSocketResponse
 import me.anasmusa.portfolio.api.model.webscoket.WebsocketEntityType
@@ -51,9 +55,7 @@ class Socket(
                     Json.decodeFromString<WebSocketResponse>((event.data as? JsString).toString())
                 println(response)
                 if (response.type == WebsocketEntityType.MESSAGE) {
-                    val message = Json.decodeFromString<MessageResponse>(
-                        (response.data as JsonPrimitive).content
-                    )
+                    val message = Json.decodeFromJsonElement<MessageResponse>(response.data)
                     onGetNewMessage(
                         Message(
                             message.id,
@@ -63,7 +65,7 @@ class Socket(
                         )
                     )
                 } else if (response.type == WebsocketEntityType.ID) {
-                    userId = (response.data as JsonPrimitive).content.toLong()
+                    userId = response.data.jsonPrimitive.long
                     onInitialized()
                 }
             } catch (e: Exception) {

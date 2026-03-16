@@ -19,22 +19,25 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import me.anasmusa.portfolio.Strings
 import me.anasmusa.portfolio.core.deviceValue
-import me.anasmusa.portfolio.core.stringResource
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.stringResource
+import portfolio.composeapp.generated.resources.Res
+import portfolio.composeapp.generated.resources.figma_credit
+import portfolio.composeapp.generated.resources.rive_credit
 
 @Composable
 private fun Item(
     modifier: Modifier,
-    text: Int,
+    text: StringResource,
     name: String,
     link: String
 ){
     val colorPrimary = MaterialTheme.colorScheme.primary
-    val text = remember(colorPrimary) {
+    val fullText = stringResource(text, name)
+    val text = remember(colorPrimary, fullText) {
         buildAnnotatedString {
-            val fullText = stringResource(text, name)
-
+            if (fullText.isEmpty()) return@buildAnnotatedString
             val startIndex = fullText.indexOf(name)
             val endIndex = startIndex + name.length
 
@@ -86,17 +89,17 @@ fun Footer(
                 .padding(top = 24.dp)
                 .align(Alignment.CenterHorizontally)
                 .padding(horizontal = horizontalPadding),
-            text = Strings.figma_credit,
-            "José Luis",
-            "https://www.figma.com/community/file/1357544466051780951/personal-portfolio"
+            text = Res.string.figma_credit,
+            name = "José Luis",
+            link = "https://www.figma.com/community/file/1357544466051780951/personal-portfolio"
         )
         Item(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .padding(horizontal = horizontalPadding),
-            text = Strings.rive_credit,
-            "GowthamSelvaraj",
-            "https://rive.app/marketplace/20336-38229-emotional-chatbot-animation-built-with-boolean-magic/"
+            text = Res.string.rive_credit,
+            name = "GowthamSelvaraj",
+            link = "https://rive.app/marketplace/20336-38229-emotional-chatbot-animation-built-with-boolean-magic/"
         )
     }
 }

@@ -12,15 +12,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import me.anasmusa.portfolio.core.deviceValue
-import me.anasmusa.portfolio.core.stringResource
 import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun Title(
     modifier: Modifier = Modifier,
     icon: DrawableResource,
-    title: Int
+    title: StringResource
 ){
     Row(
         modifier = modifier

@@ -14,7 +14,10 @@ val lightScheme = lightColorScheme(
     surfaceContainerHigh = Color(0xFFEDEDED),
     onSurface = Color(0xFF505050),
     primary = Color(0xFFF4B465),
-    onPrimary = Color.White
+    onPrimary = Color.White,
+    secondaryContainer = Color(0xFFF4B465),
+    onSecondaryContainer = Color.White,
+    onSurfaceVariant = Color.Black
 )
 
 val darkScheme = darkColorScheme(
@@ -27,5 +30,8 @@ val darkScheme = darkColorScheme(
     surfaceContainerHigh = Color(0xFF2E2E2E),
     onSurface = Color(0xFFFFFFFF),
     primary = Color(0xFFFFEA9F),
-    onPrimary = Color.Black
+    onPrimary = Color.Black,
+    secondaryContainer = Color.White,
+    onSecondaryContainer = Color.Black,
+    onSurfaceVariant = Color.White
 )

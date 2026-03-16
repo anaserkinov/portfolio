@@ -10,17 +10,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.valentinilk.shimmer.shimmer
-import me.anasmusa.portfolio.Strings
 import me.anasmusa.portfolio.api.model.SkillResponse
 import me.anasmusa.portfolio.component.Chip
 import me.anasmusa.portfolio.component.ShimmerBox
 import me.anasmusa.portfolio.component.Title
 import me.anasmusa.portfolio.core.deviceValue
-import me.anasmusa.portfolio.core.stringResource
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import portfolio.composeapp.generated.resources.Res
-import portfolio.composeapp.generated.resources.ic_hash
-import kotlin.random.Random
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.stringResource
+import portfolio.composeapp.generated.resources.*
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
@@ -36,41 +34,41 @@ fun SkillsSection(
 
         Title(
             icon = Res.drawable.ic_hash,
-            title = Strings.skills
+            title = Res.string.skills
         )
 
         data?.let { data ->
             SkillCell(
-                Strings.proficient,
+                Res.string.proficient,
                 data.proficient
             )
             Spacer(modifier = Modifier.height(
                 deviceValue(8, 16).dp
             ))
             SkillCell(
-                Strings.competent,
+                Res.string.competent,
                 data.competent
             )
             Spacer(modifier = Modifier.height(
                 deviceValue(8, 16).dp
             ))
             SkillCell(
-                Strings.familiar,
+                Res.string.familiar,
                 data.familiar
             )
             Spacer(modifier = Modifier.height(
                 deviceValue(8, 16).dp
             ))
         } ?: run {
-            ShimmerSkillCell(Strings.proficient)
+            ShimmerSkillCell(Res.string.proficient)
             Spacer(modifier = Modifier.height(
                 deviceValue(8, 16).dp
             ))
-            ShimmerSkillCell(Strings.competent)
+            ShimmerSkillCell(Res.string.competent)
             Spacer(modifier = Modifier.height(
                 deviceValue(8, 16).dp
             ))
-            ShimmerSkillCell(Strings.familiar)
+            ShimmerSkillCell(Res.string.familiar)
             Spacer(modifier = Modifier.height(
                 deviceValue(8, 16).dp
             ))
@@ -81,18 +79,18 @@ fun SkillsSection(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun SkillCell(
-    title: Int,
+    title: StringResource,
     items: List<List<SkillResponse.Entity>>
 ){
-    if (title != 0)
-        Text(
-            modifier = Modifier
-                .padding(bottom = deviceValue(3, 6).dp),
-            text = stringResource(title),
-            color = MaterialTheme.colorScheme.onBackground,
-            fontSize = deviceValue(13, 22).sp,
-            fontWeight = FontWeight.Medium
-        )
+    Text(
+        modifier = Modifier
+            .padding(bottom = deviceValue(3, 6).dp),
+        text = stringResource(title),
+        color = MaterialTheme.colorScheme.onBackground,
+        fontSize = deviceValue(13, 22).sp,
+        fontWeight = FontWeight.Medium
+    )
+
     items.forEach { list ->
         FlowRow(
             modifier = Modifier.fillMaxWidth(),
@@ -105,7 +103,8 @@ private fun SkillCell(
                 Chip(
                     height = height,
                     size = size,
-                    text = it.name
+                    text = it.name,
+                    filled = false
                 )
             }
         }
@@ -115,7 +114,7 @@ private fun SkillCell(
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun ShimmerSkillCell(title: Int){
+private fun ShimmerSkillCell(title: StringResource){
     Text(
         modifier = Modifier
             .padding(bottom = deviceValue(3, 6).dp),

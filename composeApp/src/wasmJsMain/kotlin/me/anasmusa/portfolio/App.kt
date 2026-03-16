@@ -40,7 +40,6 @@ import me.anasmusa.portfolio.chat.Chat
 import me.anasmusa.portfolio.component.AnimationOverlay
 import me.anasmusa.portfolio.component.AnimationType
 import me.anasmusa.portfolio.core.*
-import me.anasmusa.portfolio.core.Resource
 import me.anasmusa.portfolio.main.*
 import me.anasmusa.portfolio.theme.appTypography
 import me.anasmusa.portfolio.theme.darkScheme
@@ -48,6 +47,14 @@ import me.anasmusa.portfolio.theme.lightScheme
 import org.jetbrains.compose.resources.*
 import org.w3c.dom.MediaQueryListEvent
 import org.w3c.dom.events.Event
+import portfolio.composeapp.generated.resources.Res
+import portfolio.composeapp.generated.resources.about_me
+import portfolio.composeapp.generated.resources.education
+import portfolio.composeapp.generated.resources.experience
+import portfolio.composeapp.generated.resources.got_it
+import portfolio.composeapp.generated.resources.head_up
+import portfolio.composeapp.generated.resources.projects
+import portfolio.composeapp.generated.resources.website_warning
 
 val LocalWindowSize = compositionLocalOf { IntSize.Zero }
 
@@ -112,7 +119,7 @@ fun ResourceEnvironmentFix(lang: String?, content: @Composable () -> Unit) {
 }
 
 @Composable
-private fun DrawerCell(title: Int, onClick: () -> Unit) {
+private fun DrawerCell(title: StringResource, onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .padding(bottom = deviceValue(12, 24).dp)
@@ -146,211 +153,202 @@ fun App() {
         )
     }
 
-    var stringsLoaded by remember { mutableStateOf(Resource.isLoaded) }
-    LaunchedEffect(lang) {
-        Resource.setLocale(lang.isoFormat) {
-            stringsLoaded = true
+    localStorage.getItem("theme")?.let {
+        if (it.toBoolean())
+            isDarkTheme = true
+    } ?: run {
+        val query = window.matchMedia("(prefers-color-scheme: dark)")
+        isDarkTheme = query.matches
+        DisposableEffect(query) {
+            val listener: (event: Event) -> Unit = { event ->
+                val mediaEvent = event as? MediaQueryListEvent
+                if (mediaEvent != null) {
+                    isDarkTheme = mediaEvent.matches
+                }
+            }
+            query.addListener(listener)
+            onDispose {
+                query.removeListener(listener)
+            }
         }
     }
 
-    if (stringsLoaded) {
-        localStorage.getItem("theme")?.let {
-            if (it.toBoolean())
-                isDarkTheme = true
-        } ?: run {
-            val query = window.matchMedia("(prefers-color-scheme: dark)")
-            isDarkTheme = query.matches
-            DisposableEffect(query) {
-                val listener: (event: Event) -> Unit = { event ->
-                    val mediaEvent = event as? MediaQueryListEvent
-                    if (mediaEvent != null) {
-                        isDarkTheme = mediaEvent.matches
-                    }
-                }
-                query.addListener(listener)
-                onDispose {
-                    query.removeListener(listener)
-                }
-            }
-        }
+    val listState = rememberLazyListState()
+    var snapshotImage by remember { mutableStateOf<ImageBitmap?>(null) }
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
+    val coroutineScope = rememberCoroutineScope()
+    val graphicsLayer = rememberGraphicsLayer()
+    var insideDrawer by remember { mutableStateOf(false) }
+    var drawerGesturesEnabled by remember { mutableStateOf(true) }
+    var warningShowed by remember {
+        mutableStateOf(
+            localStorage.getItem("warning").toBoolean()
+        )
+    }
 
-        val listState = rememberLazyListState()
-        var snapshotImage by remember { mutableStateOf<ImageBitmap?>(null) }
-        val drawerState = rememberDrawerState(DrawerValue.Closed)
-        val coroutineScope = rememberCoroutineScope()
-        val graphicsLayer = rememberGraphicsLayer()
-        var insideDrawer by remember { mutableStateOf(false) }
-        var drawerGesturesEnabled by remember { mutableStateOf(true) }
-        var warningShowed by remember {
-            mutableStateOf(
-                localStorage.getItem("warning").toBoolean()
-            )
-        }
-
-        MaterialTheme(
-            colorScheme = if (isDarkTheme) darkScheme else lightScheme,
-            typography = appTypography()
-        ) {
-            ResourceEnvironmentFix(lang.isoFormat) {
-                WindowSizeProvider {
-                    key(lang) {
-                        val onMenuItemClicked: (Int) -> Unit = { position: Int ->
-                            if (drawerState.isOpen)
-                                coroutineScope.launch {
-                                    drawerState.close()
-                                }
+    MaterialTheme(
+        colorScheme = if (isDarkTheme) darkScheme else lightScheme,
+        typography = appTypography()
+    ) {
+        ResourceEnvironmentFix(lang.isoFormat) {
+            WindowSizeProvider {
+                key(lang) {
+                    val onMenuItemClicked: (Int) -> Unit = { position: Int ->
+                        if (drawerState.isOpen)
                             coroutineScope.launch {
-                                listState.animateScrollToItem(position)
+                                drawerState.close()
                             }
+                        coroutineScope.launch {
+                            listState.animateScrollToItem(position)
                         }
-                        var themeToggleSize = IntSize.Zero
-                        var themeTogglePosition = Offset(0f, 0f)
-                        var animationType by remember { mutableStateOf<AnimationType?>(null) }
+                    }
+                    var themeToggleSize = IntSize.Zero
+                    var themeTogglePosition = Offset(0f, 0f)
+                    var animationType by remember { mutableStateOf<AnimationType?>(null) }
 
-                        val appScene = @Composable {
-                            val shimmerTheme = remember {
-                                defaultShimmerTheme.copy(
-                                    animationSpec = infiniteRepeatable(
-                                        animation = shimmerSpec(
-                                            durationMillis = 1000,
-                                            easing = LinearEasing,
-                                            delayMillis = 600,
-                                        ),
-                                        repeatMode = RepeatMode.Restart,
-                                    )
+                    val appScene = @Composable {
+                        val shimmerTheme = remember {
+                            defaultShimmerTheme.copy(
+                                animationSpec = infiniteRepeatable(
+                                    animation = shimmerSpec(
+                                        durationMillis = 1000,
+                                        easing = LinearEasing,
+                                        delayMillis = 600,
+                                    ),
+                                    repeatMode = RepeatMode.Restart,
+                                )
+                            )
+                        }
+                        CompositionLocalProvider(
+                            LocalShimmerTheme provides shimmerTheme
+                        ) {
+                            BoxWithConstraints(
+                                modifier = Modifier.fillMaxSize()
+                            ) {
+                                AppScene(
+                                    graphicsLayer = graphicsLayer,
+                                    isDarkTheme = isDarkTheme,
+                                    lang = lang,
+                                    listState = listState,
+                                    onMainMenuStateChanged = {
+                                        insideDrawer = !it
+                                    },
+                                    onThemeTogglePositioned = {
+                                        themeToggleSize = it.size
+                                        themeTogglePosition = it.positionInRoot()
+                                    },
+                                    onThemeChange = {
+                                        if (snapshotImage != null)
+                                            return@AppScene
+                                        animationType = AnimationType.CIRCULAR_REVEAL(
+                                            themeTogglePosition,
+                                            themeToggleSize.height / 2,
+                                            !isDarkTheme
+                                        )
+                                        coroutineScope.launch {
+                                            val bitmap = graphicsLayer.toImageBitmap()
+                                            isDarkTheme = !isDarkTheme
+                                            localStorage.setItem("theme", isDarkTheme.toString())
+                                            snapshotImage = bitmap
+                                        }
+                                    },
+                                    onLangChange = {
+                                        if (snapshotImage != null)
+                                            return@AppScene
+                                        animationType = AnimationType.LRT()
+                                        coroutineScope.launch {
+                                            val bitmap = graphicsLayer.toImageBitmap()
+                                            Localization.lang = it.isoFormat
+                                            lang = it
+                                            localStorage.setItem("lang", it.isoFormat)
+                                            snapshotImage = bitmap
+                                        }
+                                    },
+                                    onMenuClicked = {
+                                        coroutineScope.launch {
+                                            drawerState.open()
+                                        }
+                                    },
+                                    onMenuItemClicked = onMenuItemClicked,
+                                    onChatStateChanged = {
+                                        drawerGesturesEnabled = !it
+                                    }
                                 )
                             }
-                            CompositionLocalProvider(
-                                LocalShimmerTheme provides shimmerTheme
-                            ) {
-                                BoxWithConstraints(
-                                    modifier = Modifier.fillMaxSize()
-                                ) {
-                                    AppScene(
-                                        graphicsLayer = graphicsLayer,
-                                        isDarkTheme = isDarkTheme,
-                                        lang = lang,
-                                        listState = listState,
-                                        onMainMenuStateChanged = {
-                                            insideDrawer = !it
-                                        },
-                                        onThemeTogglePositioned = {
-                                            themeToggleSize = it.size
-                                            themeTogglePosition = it.positionInRoot()
-                                        },
-                                        onThemeChange = {
-                                            if (snapshotImage != null)
-                                                return@AppScene
-                                            animationType = AnimationType.CIRCULAR_REVEAL(
-                                                themeTogglePosition,
-                                                themeToggleSize.height / 2,
-                                                !isDarkTheme
-                                            )
-                                            coroutineScope.launch {
-                                                val bitmap = graphicsLayer.toImageBitmap()
-                                                isDarkTheme = !isDarkTheme
-                                                localStorage.setItem("theme", isDarkTheme.toString())
-                                                snapshotImage = bitmap
-                                            }
-                                        },
-                                        onLangChange = {
-                                            if (snapshotImage != null)
-                                                return@AppScene
-                                            animationType = AnimationType.LRT()
-                                            coroutineScope.launch {
-                                                val bitmap = graphicsLayer.toImageBitmap()
-                                                Localization.lang = it.isoFormat
-                                                lang = it
-                                                localStorage.setItem("lang", it.isoFormat)
-                                                snapshotImage = bitmap
-                                            }
-                                        },
-                                        onMenuClicked = {
-                                            coroutineScope.launch {
-                                                drawerState.open()
-                                            }
-                                        },
-                                        onMenuItemClicked = onMenuItemClicked,
-                                        onChatStateChanged = {
-                                            drawerGesturesEnabled = !it
-                                        }
-                                    )
-                                }
-                            }
-
-                            AnimationOverlay(
-                                snapshotImage = snapshotImage,
-                                animationType,
-                                onAnimationFinished = {
-                                    snapshotImage = null
-                                    animationType = null
-                                }
-                            )
                         }
 
-                        if (insideDrawer)
-                            ModalNavigationDrawer(
-                                drawerState = drawerState,
-                                gesturesEnabled = drawerGesturesEnabled,
-                                drawerContent = {
-                                    Column(
-                                        modifier = Modifier
-                                            .fillMaxHeight()
-                                            .fillMaxWidth(0.7f)
-                                            .background(
-                                                color = MaterialTheme.colorScheme.background,
-                                                shape = RoundedCornerShape(0.dp, 16.dp, 16.dp, 0.dp)
-                                            )
-                                    ) {
-                                        Spacer(modifier = Modifier.height(24.dp))
+                        AnimationOverlay(
+                            snapshotImage = snapshotImage,
+                            animationType,
+                            onAnimationFinished = {
+                                snapshotImage = null
+                                animationType = null
+                            }
+                        )
+                    }
 
-                                        DrawerCell(Strings.about_me) {
-                                            onMenuItemClicked(0)
-                                        }
-                                        DrawerCell(Strings.experience) {
-                                            onMenuItemClicked(1)
-                                        }
-                                        DrawerCell(Strings.education) {
-                                            onMenuItemClicked(2)
-                                        }
-                                        DrawerCell(Strings.projects) {
-                                            onMenuItemClicked(3)
-                                        }
+                    if (insideDrawer)
+                        ModalNavigationDrawer(
+                            drawerState = drawerState,
+                            gesturesEnabled = drawerGesturesEnabled,
+                            drawerContent = {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxHeight()
+                                        .fillMaxWidth(0.7f)
+                                        .background(
+                                            color = MaterialTheme.colorScheme.background,
+                                            shape = RoundedCornerShape(0.dp, 16.dp, 16.dp, 0.dp)
+                                        )
+                                ) {
+                                    Spacer(modifier = Modifier.height(24.dp))
+
+                                    DrawerCell(Res.string.about_me) {
+                                        onMenuItemClicked(0)
+                                    }
+                                    DrawerCell(Res.string.experience) {
+                                        onMenuItemClicked(1)
+                                    }
+                                    DrawerCell(Res.string.education) {
+                                        onMenuItemClicked(2)
+                                    }
+                                    DrawerCell(Res.string.projects) {
+                                        onMenuItemClicked(3)
                                     }
                                 }
-                            ) {
-                                appScene()
                             }
-                        else
+                        ) {
                             appScene()
-                    }
-                }
-
-                if (!warningShowed)
-                    AlertDialog(
-                        onDismissRequest = {
-                            warningShowed = true
-                            localStorage.setItem("warning", "true")
-                        },
-                        title = { Text(stringResource(Strings.head_up)) },
-                        text = {
-                            Text(
-                                text = stringResource(Strings.website_warning),
-                                fontWeight = FontWeight.SemiBold
-                            )
-                        },
-                        confirmButton = {
-                            TextButton(
-                                onClick = {
-                                    warningShowed = true
-                                    localStorage.setItem("warning", "true")
-                                },
-                            ) {
-                                Text(stringResource(Strings.got_it))
-                            }
                         }
-                    )
+                    else
+                        appScene()
+                }
             }
+
+            if (!warningShowed)
+                AlertDialog(
+                    onDismissRequest = {
+                        warningShowed = true
+                        localStorage.setItem("warning", "true")
+                    },
+                    title = { Text(stringResource(Res.string.head_up)) },
+                    text = {
+                        Text(
+                            text = stringResource(Res.string.website_warning),
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    },
+                    confirmButton = {
+                        TextButton(
+                            onClick = {
+                                warningShowed = true
+                                localStorage.setItem("warning", "true")
+                            },
+                        ) {
+                            Text(stringResource(Res.string.got_it))
+                        }
+                    }
+                )
         }
     }
 }
@@ -371,7 +369,6 @@ fun BoxWithConstraintsScope.AppScene(
 ) {
     val viewModel = viewModel { MainViewModel() }
     val state by viewModel.state.collectAsState()
-    val snackbarHostState = remember { SnackbarHostState() }
 
     Column(
         modifier = Modifier
@@ -424,8 +421,7 @@ fun BoxWithConstraintsScope.AppScene(
             item(key = 1, contentType = 1) {
                 AboutSection(
                     modifier = Modifier.padding(horizontal = padding),
-                    data = state.about,
-                    snackbarHostState = snackbarHostState
+                    data = state.about
                 )
                 LaunchedEffect(Unit) {
                     viewModel.handle(MainIntent.LoadAbout)
@@ -471,9 +467,13 @@ fun BoxWithConstraintsScope.AppScene(
             projectSection(
                 modifier = Modifier.padding(horizontal = padding),
                 shimmer = shimmer,
-                data = state.projects,
+                projects = state.projects,
+                totalProjectsCount = state.totalProjectsCount,
+                platforms = state.platforms,
+                selectedPlatform = state.selectedPlatform,
                 isAllLoading = state.isAllProjectsLoading,
                 loadProjects = { viewModel.handle(MainIntent.LoadProjects(it)) },
+                selectPlatform = { viewModel.handle(MainIntent.SelectPlatform(it)) }
             )
 
             item(key = 6, contentType = 6) {
@@ -487,18 +487,5 @@ fun BoxWithConstraintsScope.AppScene(
     Chat(
         isDarkTheme = isDarkTheme,
         onStateChanged = onChatStateChanged
-    )
-
-    SnackbarHost(
-        modifier = Modifier
-            .align(Alignment.BottomCenter),
-        hostState = snackbarHostState,
-        snackbar = {
-            Snackbar(
-                snackbarData = it,
-                containerColor = MaterialTheme.colorScheme.surface,
-                contentColor = MaterialTheme.colorScheme.onSurface
-            )
-        }
     )
 }

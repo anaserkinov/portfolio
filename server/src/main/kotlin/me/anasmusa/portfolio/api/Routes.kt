@@ -79,8 +79,19 @@ fun Application.module() {
                     return@get call.respond(BaseResponse(null))
 
                     val isPrimary = call.queryParameters["isPrimary"]?.toBoolean()
-                    if (isPrimary == true)
-                        response = response.copy(entities = response.entities.filter { it.isPrimary })
+                    if (isPrimary == true) {
+                        val map = HashMap<Platform, Int>()
+                        response.entities.forEach {
+                            it.platforms.forEach { platform ->
+                                map[platform] = (map[platform] ?: 0) + 1
+                            }
+                        }
+                        response = response.copy(
+                            entities = response.entities.filter { it.isPrimary },
+                            platforms = map.map { ProjectResponse.PlatformInfo(it.key, it.value) }
+                                .sortedByDescending { it.count }
+                        )
+                    }
                     return@get call.respond(BaseResponse(response))
                 }
             }

@@ -4,9 +4,10 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-enum class System {
+enum class Platform {
     @SerialName("android") Android,
-    @SerialName("compose_multiplatform") ComposeMultiplatform,
-    @SerialName("ktor_server") KtorServer,
-    @SerialName("react_js") ReactJs,
+    @SerialName("ios") Ios,
+    @SerialName("desktop") Desktop,
+    @SerialName("web") Web,
+    @SerialName("backend") Backend,
 }

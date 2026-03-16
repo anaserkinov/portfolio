@@ -37,7 +37,7 @@ object AI {
         delay(10_000)
         val result = arrayListOf<List<Float>>()
         ai.models.embedContent(
-            "gemini-embedding-exp-03-07",
+            "gemini-embedding-001",
             text,
             EmbedContentConfig.builder()
                 .outputDimensionality(768)
@@ -53,7 +53,7 @@ object AI {
 
     fun embedText(text: String): List<Float> {
         return ai.models.embedContent(
-            "gemini-embedding-exp-03-07",
+            "gemini-embedding-001",
             text,
             EmbedContentConfig.builder()
                 .outputDimensionality(768)
