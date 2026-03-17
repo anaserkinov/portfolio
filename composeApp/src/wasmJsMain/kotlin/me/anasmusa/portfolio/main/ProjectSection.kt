@@ -307,7 +307,10 @@ private fun Cell(
                 Chip(
                     height = height,
                     size = size,
-                    text = text,
+                    text = if (it.label != null)
+                        "$text(${it.label})"
+                    else
+                        text,
                     icon = icon,
                     onClick = {
                         window.open(it.value, "_blank")

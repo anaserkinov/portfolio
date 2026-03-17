@@ -13,7 +13,7 @@ import io.qdrant.client.grpc.Points.PointStruct
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import me.anasmusa.portfolio.ai.AI
 import me.anasmusa.portfolio.core.AppJson
 import java.io.File
@@ -64,21 +64,38 @@ object QdrantDatabase {
         return insert(json)
     }
 
-    private suspend fun insert(json: JsonObject): Boolean {
-        return try {
+    private suspend fun insert(json: JsonObject): Boolean = withContext(Dispatchers.IO) {
+        try {
+            val ids = json.map { stringToLong(it.key) }
+            val removed = qdrant.queryAsync(
+                Points.QueryPoints.newBuilder()
+                    .setCollectionName("resume")
+                    .build()
+            ).get().filter {
+                !ids.contains(it.id.num)
+            }
+            if (removed.isNotEmpty()) {
+                qdrant.deleteAsync(
+                    "resume",
+                    removed.map { it.id }
+                )
+            }
             json.forEach { (key, element) ->
                 val id = key
-                if (
-                    qdrant.queryAsync(
+                val text = element.jsonPrimitive.toString()
+
+                try {
+                    val item = qdrant.queryAsync(
                         Points.QueryPoints.newBuilder()
                             .setCollectionName("resume")
-                            .setQuery(nearest(id.toLong()))
-                            .build()).get().isNotEmpty()
-                ) return@forEach
+                            .setQuery(nearest(id(stringToLong(id))))
+                            .build()
+                    ).get()?.firstOrNull()
+                    if (item != null && item.payloadMap["text"]?.stringValue == text)
+                        return@forEach
+                } catch (_: Exception) {}
 
-                val text = element.jsonObject["text"]?.toString() ?: return false
                 val embedding = AI.embed(text)
-
                 qdrant.upsertAsync(
                     "resume",
                     embedding.map {
@@ -91,7 +108,8 @@ object QdrantDatabase {
                 ).get()
             }
             true
-        } catch (_: Exception){
+        } catch (e: Exception){
+            e.printStackTrace()
             false
         }
     }
