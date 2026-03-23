@@ -1,6 +1,7 @@
 # 🗂️ Portfolio
 
 A personal portfolio website with an AI-powered chat assistant that can answer questions about the owner's experience, skills, and projects.
+🌐 **[Visit Site → anasmusa.me/portfolio/compose](https://anasmusa.me/portfolio/compose)**
 
 The frontend is built with **Kotlin/Wasm** using Compose Multiplatform, and the backend is a **Ktor** server powered by **Gemini AI** with vector search via **Qdrant**.
 
