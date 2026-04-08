@@ -39,7 +39,7 @@ fun ExperienceSection(
             data.entities.forEach {
                 InfoCell(
                     it.date,
-                    "${it.position} - ${it.company}",
+                    it.position + if (it.company.isNullOrBlank()) "" else it.company,
                     it.items
                 )
             }

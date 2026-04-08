@@ -4,7 +4,7 @@ class Experience(
     val entities: List<Entity>
 ) {
     class Entity(
-        val company: String,
+        val company: String?,
         val link: String?,
         val date: String,
         val position: String,
